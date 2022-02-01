@@ -1,10 +1,62 @@
 // Storage Controller
 const StorageCtrl = (function () {
 
-  return {
+  const storeJSON = function (key, data) {
+
+    if (typeof data === 'object') {
+
+      const dataX = JSON.stringify(data)
+
+      localStorage.setItem(key, dataX)
+
+    }
 
   }
-})()
+
+  const retreiveJSON = function (key) {
+
+    const data = localStorage.getItem(key)
+
+    const dataX = JSON.parse(data)
+
+    if (typeof dataX === 'object' && dataX !== null) {
+
+      return dataX
+
+    } else {
+
+      return ''
+
+    }
+
+  }
+
+  const storeData = function (key, data) {
+
+    localStorage.setItem(key, data)
+
+  }
+
+  const retreiveData = function (key) {
+
+    const data = localStorage.getItem(key)
+
+    return data
+
+  }
+
+  return {
+
+    retreiveJSON: (key) => retreiveJSON(key),
+
+    retreiveData: (key) => retreiveData(key),
+
+    storeJSON: (key, data) => storeJSON(key, data),
+
+    storeData: (key, data) => storeData(key, data),
+
+  }
+})();
 
 
 // Time Controller

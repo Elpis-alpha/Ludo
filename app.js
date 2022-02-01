@@ -30,6 +30,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
     board: UICtrl.findElement('.board'),
     boardMessage: UICtrl.findElement('.BBM-board-text'),
+    boardHolder: UICtrl.findElement('.board-holder'),
     boardMessageValues: UICtrl.findElement('.BBM-board-values'),
     dieBtnHolder: UICtrl.findElement('.die-btn-hol'),
     dieSpinner: UICtrl.findElement('.die-spinner'),
@@ -38,6 +39,37 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
     // Die Spinners
     leftSpinner: UICtrl.findElement('.left-spinner'),
     rightSpinner: UICtrl.findElement('.right-spinner'),
+
+    // Input
+    startGame: UICtrl.findElement('.start-game'),
+
+    welcomePhase: UICtrl.findElement('.welcome-phase'),
+    numberPlayersPhase: UICtrl.findElement('.number-players-phase'),
+    playerInputPhase: UICtrl.findElement('.player-input-phase'),
+    safeSpotPhase: UICtrl.findElement('.safe-spot-phase'),
+
+    newGame: UICtrl.findElement('#new-game'),
+    continueGame: UICtrl.findElement('#continue-game'),
+
+    numbPlytwo: UICtrl.findElement('#nx-two'),
+    numbPlythree: UICtrl.findElement('#nx-three'),
+    numbPlyfour: UICtrl.findElement('#nx-four'),
+    numbPlynext: UICtrl.findElement('#numb-ply-next'),
+
+    playerImage: UICtrl.findElement('#player-image'),
+    playerName: UICtrl.findElement('#player-name'),
+    playerColor: UICtrl.findElement('#player-color'),
+    isHuman: UICtrl.findElement('#isHuman'),
+    plyInpNext: UICtrl.findElement('#ply-inp-next'),
+
+    gameSEspe: UICtrl.findElement('#nxsafe-spe'),
+    gameSEany: UICtrl.findElement('#nxsafe-any'),
+    gameSEnow: UICtrl.findElement('#nxsafe-now'),
+    startGameX: UICtrl.findElement('#start-game'),
+
+    // Links
+    linkNew: UICtrl.findElement('#link-new'),
+    linkExit: UICtrl.findElement('#link-exit'),
 
   }
 
@@ -57,27 +89,449 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
   }
 
+  const entryEvents = () => {
+
+    const allPhase = [
+      UIVars.welcomePhase,
+      UIVars.numberPlayersPhase,
+      UIVars.playerInputPhase,
+      UIVars.safeSpotPhase
+    ]
+
+    UIVars.linkNew.addEventListener('click', async e => {
+
+      e.preventDefault();
+
+      UICtrl.addClass(UIVars.startGame, 'show')
+
+      UICtrl.removeClass(UIVars.boardHolder, 'show')
+
+      allPhase.forEach(item => UICtrl.removeClass(item, 'show'))
+
+      UICtrl.addClass(UIVars.numberPlayersPhase, 'show')
+
+      let boardData = await BoardCtrl.fetchOriginalData()
+
+      boardData.players.forEach((player, index) => {
+
+        if (index == 2) {
+
+          if (player.playing == false) {
+
+            UIVars.numbPlytwo.checked = true
+
+          }
+
+        } else if (index == 3) {
+
+          if (player.playing == false) {
+
+            if (boardData.players[2].playing == false) {
+
+              UIVars.numbPlytwo.checked = true
+
+            } else {
+
+              UIVars.numbPlythree.checked = true
+
+            }
+
+
+          } else {
+
+            UIVars.numbPlyfour.checked = true
+
+          }
+
+          if (UIVars.numbPlytwo.checked || UIVars.numbPlythree.checked) {
+
+            player.playing = false
+
+          }
+
+        }
+
+      })
+
+      BoardCtrl.setData(boardData)
+
+      BoardCtrl.saveData()
+
+    })
+
+    UIVars.linkExit.addEventListener('click', async e => {
+
+      e.preventDefault();
+
+      UICtrl.addClass(UIVars.startGame, 'show')
+
+      UICtrl.removeClass(UIVars.boardHolder, 'show')
+
+      allPhase.forEach(item => UICtrl.removeClass(item, 'show'))
+
+      UICtrl.addClass(UIVars.welcomePhase, 'show')
+
+    })
+
+    UIVars.newGame.addEventListener('click', async e => {
+
+      UICtrl.addClass(UIVars.startGame, 'show')
+
+      allPhase.forEach(item => UICtrl.removeClass(item, 'show'))
+
+      UICtrl.addClass(UIVars.numberPlayersPhase, 'show')
+
+      let boardData = await BoardCtrl.fetchOriginalData()
+
+      boardData.players.forEach((player, index) => {
+
+        if (index == 2) {
+
+          if (player.playing == false) {
+
+            UIVars.numbPlytwo.checked = true
+
+          }
+
+        } else if (index == 3) {
+
+          if (player.playing == false) {
+
+            if (boardData.players[2].playing == false) {
+
+              UIVars.numbPlytwo.checked = true
+
+            } else {
+
+              UIVars.numbPlythree.checked = true
+
+            }
+
+
+          } else {
+
+            UIVars.numbPlyfour.checked = true
+
+          }
+
+          if (UIVars.numbPlytwo.checked || UIVars.numbPlythree.checked) {
+
+            player.playing = false
+
+          }
+
+        }
+
+      })
+
+      BoardCtrl.setData(boardData)
+
+      BoardCtrl.saveData()
+
+    })
+
+    UIVars.continueGame.addEventListener('click', e => {
+
+      UICtrl.removeClass(UIVars.startGame, 'show')
+
+      allPhase.forEach(item => UICtrl.removeClass(item, 'show'))
+
+      UICtrl.addClass(UIVars.boardHolder, 'show')
+
+      sizeEvents()
+
+      BoardCtrl.configureTheGame()
+
+    })
+
+    UIVars.playerColor.addEventListener('input', e => {
+
+      e.currentTarget.parentElement.style.backgroundColor = e.target.value
+
+      UIVars.playerImage.parentElement.style.backgroundColor = e.target.value
+
+    })
+
+    UIVars.playerImage.addEventListener('click', e => {
+
+      const avatarList = [
+        "images/avatar/avatar01.png",
+        "images/avatar/avatar02.png",
+        "images/avatar/avatar03.png",
+        "images/avatar/avatar04.png",
+        "images/avatar/avatar05.png",
+        "images/avatar/avatar06.png",
+        "images/avatar/avatar07.png",
+        "images/avatar/avatar08.png",
+        "images/avatar/avatar09.png",
+        "images/avatar/avatar10.png",
+        "images/avatar/avatar11.png",
+        "images/avatar/avatar12.png",
+        "images/avatar/avatar13.png",
+        "images/avatar/avatar14.png",
+      ]
+
+      e.currentTarget.src = SpecialCtrl.chooseFrom(avatarList)
+
+    })
+
+    UIVars.numbPlytwo.addEventListener('input', async e => {
+
+      let boardData = await BoardCtrl.fetchOriginalData()
+
+      boardData.players[2].playing = false
+
+      boardData.players[3].playing = false
+
+      BoardCtrl.setData(boardData)
+
+      BoardCtrl.saveData()
+
+    })
+
+    UIVars.numbPlythree.addEventListener('input', async e => {
+
+      let boardData = await BoardCtrl.fetchOriginalData()
+
+      boardData.players[2].playing = true
+
+      boardData.players[3].playing = false
+
+      BoardCtrl.setData(boardData)
+
+      BoardCtrl.saveData()
+
+    })
+
+    UIVars.numbPlyfour.addEventListener('input', async e => {
+
+      let boardData = await BoardCtrl.fetchOriginalData()
+
+      boardData.players[2].playing = true
+
+      boardData.players[3].playing = true
+
+      BoardCtrl.setData(boardData)
+
+      BoardCtrl.saveData()
+
+    })
+
+    UIVars.numbPlynext.addEventListener('click', async e => {
+
+      UICtrl.addClass(UIVars.startGame, 'show')
+
+      allPhase.forEach(item => UICtrl.removeClass(item, 'show'))
+
+      UICtrl.addClass(UIVars.playerInputPhase, 'show')
+
+      UIVars.playerInputPhase.dataset.currentplayer = 0
+
+
+      let boardData = await BoardCtrl.fetchOriginalData()
+
+      const currentPlayer = parseInt(UIVars.playerInputPhase.dataset.currentplayer)
+
+      UIVars.playerImage.src = boardData.players[currentPlayer].avatar
+
+      UIVars.playerName.value = boardData.players[currentPlayer].name
+
+      UIVars.playerColor.value = boardData.players[currentPlayer].color
+
+      UIVars.playerColor.parentElement.style.backgroundColor = boardData.players[currentPlayer].color
+
+      UIVars.playerImage.parentElement.style.backgroundColor = boardData.players[currentPlayer].color
+
+      UIVars.isHuman.checked = boardData.players[currentPlayer].isHuman
+
+      UIVars.playerInputPhase.dataset.currentplayer = 0
+    })
+
+    UIVars.plyInpNext.addEventListener('click', async e => {
+
+      let boardData = await BoardCtrl.fetchOriginalData()
+
+      let currentPlayer = parseInt(UIVars.playerInputPhase.dataset.currentplayer)
+
+      const savePreviousPlayer = () => {
+
+        boardData.players[currentPlayer].avatar = UIVars.playerImage.src
+
+        boardData.players[currentPlayer].name = UIVars.playerName.value
+
+        boardData.players[currentPlayer].color = UIVars.playerColor.value
+
+        boardData.players[currentPlayer].isHuman = UIVars.isHuman.checked
+
+        BoardCtrl.setData(boardData)
+
+        BoardCtrl.saveData()
+
+      }
+
+      savePreviousPlayer()
+
+      if (currentPlayer < 3) {
+
+        if (boardData.players[currentPlayer + 1].playing == true) {
+
+          currentPlayer++
+
+          UIVars.playerImage.src = boardData.players[currentPlayer].avatar
+
+          UIVars.playerName.value = boardData.players[currentPlayer].name
+
+          UIVars.playerColor.value = boardData.players[currentPlayer].color
+
+          UIVars.playerColor.parentElement.style.backgroundColor = boardData.players[currentPlayer].color
+
+          UIVars.playerImage.parentElement.style.backgroundColor = boardData.players[currentPlayer].color
+
+          UIVars.isHuman.checked = boardData.players[currentPlayer].isHuman
+
+          UIVars.playerInputPhase.dataset.currentplayer = currentPlayer
+
+        } else {
+
+          UICtrl.addClass(UIVars.startGame, 'show')
+
+          allPhase.forEach(item => UICtrl.removeClass(item, 'show'))
+
+          UICtrl.addClass(UIVars.safeSpotPhase, 'show')
+
+          UIVars.playerInputPhase.dataset.currentplayer = 0
+
+        }
+
+      } else {
+
+        UICtrl.addClass(UIVars.startGame, 'show')
+
+        allPhase.forEach(item => UICtrl.removeClass(item, 'show'))
+
+        UICtrl.addClass(UIVars.safeSpotPhase, 'show')
+
+        UIVars.playerInputPhase.dataset.currentplayer = 0
+
+        UIVars.gameSEany.checked = false;
+
+        UIVars.gameSEnow.checked = false;
+
+        UIVars.gameSEspe.checked = false;
+
+        switch (boardData.gameSafe) {
+
+          case "special":
+
+            UIVars.gameSEspe.checked = true;
+
+            break;
+
+          case "nowhere":
+
+            UIVars.gameSEnow.checked = true;
+
+            break;
+
+          case "anywhere":
+
+            UIVars.gameSEany.checked = true;
+
+            break;
+
+          default:
+            break;
+        }
+
+      }
+
+    })
+
+    UIVars.startGameX.addEventListener('click', async e => {
+
+      let boardData = await BoardCtrl.fetchOriginalData()
+
+      if (UIVars.gameSEspe.checked) {
+
+        boardData.gameSafe = 'special'
+
+      } else if (UIVars.gameSEnow.checked) {
+
+        boardData.gameSafe = 'nowhere'
+
+      } else {
+
+        boardData.gameSafe = 'anywhere'
+
+      }
+
+      boardData.gameStart = new Date()
+
+      boardData.players[0].chips = [
+        { name: 'chip-A-1', started: false, finished: false, location: 'holder' },
+        { name: 'chip-A-2', started: false, finished: false, location: 'holder' },
+        { name: 'chip-A-3', started: false, finished: false, location: 'holder' },
+        { name: 'chip-A-4', started: false, finished: false, location: 'holder' },
+      ]
+
+      boardData.players[1].chips = [
+        { name: 'chip-B-1', started: false, finished: false, location: 'holder' },
+        { name: 'chip-B-2', started: false, finished: false, location: 'holder' },
+        { name: 'chip-B-3', started: false, finished: false, location: 'holder' },
+        { name: 'chip-B-4', started: false, finished: false, location: 'holder' },
+      ]
+
+      boardData.players[2].chips = [
+        { name: 'chip-C-1', started: false, finished: false, location: 'holder' },
+        { name: 'chip-C-2', started: false, finished: false, location: 'holder' },
+        { name: 'chip-C-3', started: false, finished: false, location: 'holder' },
+        { name: 'chip-C-4', started: false, finished: false, location: 'holder' },
+      ]
+
+      boardData.players[3].chips = [
+        { name: 'chip-D-1', started: false, finished: false, location: 'holder' },
+        { name: 'chip-D-2', started: false, finished: false, location: 'holder' },
+        { name: 'chip-D-3', started: false, finished: false, location: 'holder' },
+        { name: 'chip-D-4', started: false, finished: false, location: 'holder' },
+      ]
+
+      BoardCtrl.setData(boardData)
+
+      BoardCtrl.saveData()
+
+      UICtrl.removeClass(UIVars.startGame, 'show')
+
+      allPhase.forEach(item => UICtrl.removeClass(item, 'show'))
+
+      UICtrl.addClass(UIVars.boardHolder, 'show')
+
+      sizeEvents()
+
+      BoardCtrl.configureTheGame()
+
+    })
+
+  }
+
   const BoardCtrl = (() => {
 
     let CVtheBoardDataHexB3E = {}
 
-    const fetchOriginalData = async () => {
+    const createFirstData = async () => {
 
-      // const originalData = await APICtrl.getAPI_Json('The URL')
+      const originData = {
 
-      const originalData = {
-
-        uniqueID: 'Board-L234',
+        uniqueID: 'Board-L001',
 
         players: [
           {
-            name: 'Elpis',
+            name: 'Player 1',
             color: '#0000ff',
-            avatar: 'images/Screenshot (104).png',
+            avatar: 'images/avatar/avatar03.png',
             chips: [
-              { name: 'chip-A-1', started: true, finished: false, location: 'A-4' },
-              { name: 'chip-A-2', started: true, finished: false, location: '50' },
-              { name: 'chip-A-3', started: true, finished: false, location: '24' },
+              { name: 'chip-A-1', started: false, finished: false, location: 'holder' },
+              { name: 'chip-A-2', started: false, finished: false, location: 'holder' },
+              { name: 'chip-A-3', started: false, finished: false, location: 'holder' },
               { name: 'chip-A-4', started: false, finished: false, location: 'holder' },
             ],
             base: 'A',
@@ -87,11 +541,11 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
             isHuman: true
           },
           {
-            name: 'AnathemA',
+            name: 'Player 2',
             color: '#008000',
-            avatar: 'images/cat.jpg',
+            avatar: 'images/avatar/avatar06.png',
             chips: [
-              { name: 'chip-B-1', started: true, finished: false, location: '27' },
+              { name: 'chip-B-1', started: false, finished: false, location: 'holder' },
               { name: 'chip-B-2', started: false, finished: false, location: 'holder' },
               { name: 'chip-B-3', started: false, finished: false, location: 'holder' },
               { name: 'chip-B-4', started: false, finished: false, location: 'holder' },
@@ -100,12 +554,12 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
             inGame: true,
             turn: false,
             playing: true,
-            isHuman: true
+            isHuman: false
           },
           {
-            name: 'Bolu',
+            name: 'Player 3',
             color: '#ff9400',
-            avatar: 'images/eren.PNG',
+            avatar: 'images/avatar/avatar14.png',
             chips: [
               { name: 'chip-C-1', started: false, finished: false, location: 'holder' },
               { name: 'chip-C-2', started: false, finished: false, location: 'holder' },
@@ -116,22 +570,22 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
             inGame: true,
             turn: false,
             playing: true,
-            isHuman: true
+            isHuman: false
           },
           {
-            name: 'Queen',
+            name: 'Player 4',
             color: '#800000',
-            avatar: 'images/Screenshot (52).png',
+            avatar: 'images/avatar/avatar10.png',
             chips: [
-              // { name: 'chip-D-1', started: false, finished: false, location: 'holder' },
-              // { name: 'chip-D-2', started: true, finished: false, location: '39' },
-              // { name: 'chip-D-3', started: true, finished: false, location: '29' },
-              // { name: 'chip-D-4', started: true, finished: false, location: 'D-2' },
+              { name: 'chip-D-1', started: false, finished: false, location: 'holder' },
+              { name: 'chip-D-2', started: false, finished: false, location: 'holder' },
+              { name: 'chip-D-3', started: false, finished: false, location: 'holder' },
+              { name: 'chip-D-4', started: false, finished: false, location: 'holder' },
             ],
             base: 'D',
             inGame: true,
             turn: false,
-            playing: false,
+            playing: true,
             isHuman: false
           },
         ],
@@ -143,6 +597,14 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
         gameSafe: 'special' // [nowhere, special, anywhere]
 
       }
+
+      return originData
+
+    }
+
+    const fetchOriginalData = async () => {
+
+      const originalData = StorageCtrl.retreiveJSON('board')
 
       return originalData
 
@@ -162,7 +624,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
     const saveData = async () => {
 
-      await APICtrl.postAPI_Json('The URL', fetchData())
+      StorageCtrl.storeJSON('board', fetchData())
 
     }
 
@@ -189,7 +651,6 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
           background-color: ${item.color}
         }`
 
-
         if (item.turn) {
 
           const BBMIndex = colorMatching.findIndex(colorBatch => colorBatch[0] == 'BBM')
@@ -202,7 +663,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
     }
 
-    const loadBoardText = async (data, dieData) => {
+    const loadBoardText = async (data, dieData, generalMessage) => {
 
       const baseMatching = [
         ['A', UIVars.baseA, UIVars.baseAName, UIVars.baseAText,],
@@ -262,6 +723,15 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
           }
 
         }
+
+        if (generalMessage) {
+
+          SpecialCtrl.addLetters(generalMessage, UIVars.boardMessage, 50, 0, '')
+
+          messageTime = messageTime > (generalMessage.length * 50) ? messageTime : (generalMessage.length * 50)
+
+        }
+
 
       });
 
@@ -354,6 +824,16 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
           }
 
         })
+
+        // Set Player Images
+        // console.log(playerBase);
+
+        const img = UICtrl.createElement('img')
+
+        img.setAttribute("src", player.avatar)
+        img.setAttribute("alt", player.name + " picture")
+
+        UICtrl.findBy(playerBase, ".player-profile").appendChild(img)
 
       })
 
@@ -637,7 +1117,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
       UICtrl.addClass(UIVars.dieBtnHolder, 'show')
 
-      UICtrl.findBy(UIVars.dieBtnHolder, 'button').innerText = `${data.players.find(item => item.turn).name} Spin Me`
+      UICtrl.findBy(UIVars.dieBtnHolder, 'button').innerText = `${data.players.find(item => item.turn).name}\nSpin Me`
 
       // Waits for user to click the button
       await new Promise((resolve, reject) => {
@@ -724,6 +1204,16 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
       UIVars.boardMessageValues.appendChild(UICtrl.createElement('div.BBMBV-die-value', dieData[1]))
 
       UIVars.boardMessageValues.appendChild(UICtrl.createElement('div.BBMBV-die-value.X', dieData[0] + dieData[1]))
+
+    }
+
+    const displayAIDieData = async (data, dieData) => {
+
+      loadBoardText(data, dieData)
+
+      UIVars.boardMessage.innerText = ''
+
+      UIVars.boardMessageValues.innerHTML = ''
 
     }
 
@@ -977,13 +1467,6 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
       // Gets all the player chips
       const allChips = data.players.find(item => item.turn).chips
 
-      const boardDetails = [
-        ['A', 02, 0,],
-        ['B', 15, 13,],
-        ['C', 28, 26,],
-        ['D', 41, 39,],
-      ]
-
       let chipCanMove = false
 
       allChips.forEach(item => {
@@ -1036,7 +1519,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
     const moveAIChip = async (data, dieData) => {
 
-      await new Promise(resolve => {
+      await new Promise(async resolve => {
 
         const player = data.players.find(item => item.turn)
 
@@ -1047,7 +1530,18 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
           ['D', 41, 39,],
         ]
 
-        const checkChipAgainstDie = (dieValue) => {
+        const numMatching = [
+          'one-chip',
+          'two-chips', "three-chips",
+          "four-chips", "five-chips",
+          "six-chips", "ten-chips"
+        ]
+
+        const checkChipAgainstDie = async (dieValue) => {
+
+          const player = fetchData().players.find(item => item.turn)
+
+          const actionList = []
 
           for (let i = 0; i < player.chips.length; i++) {
 
@@ -1061,35 +1555,112 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
             const boardDet = boardDetails.find(item => item[0] == player.base)
 
-            // Check for a chip to eat
-            if (!isNaN(chipLocation)) {
+            if (dieValue == 6 && chipData.location == 'holder') {
+
+              // Check for a chip to bring out
+
+              actionList.push({
+                priority: 2,
+                action: "bringout",
+                chipData: chipData
+              })
+
+            } else if (!isNaN(chipLocation)) {
 
               let finalDestination = (chipLocation + dieValue)
 
               if (chipLocation <= boardDet[2] && finalDestination > boardDet[2]) {
 
-                finalDestination = NaN
+                actionList.push({
+                  priority: 3,
+                  action: "takehome",
+                  chipData: chipData
+                })
 
               } else {
 
                 finalDestination = finalDestination % 52
 
+                finalDestination = finalDestination == 0 ? 52 : finalDestination
+
+                finalDestination = UICtrl.findElement(`.track-${finalDestination}`)
+
+                if (finalDestination.children.length >= 1) {
+
+                  actionList.push({
+                    priority: 1,
+                    action: "eat",
+                    chipData: chipData
+                  })
+
+                } else {
+
+                  actionList.push({
+                    priority: 4,
+                    action: "movenorm",
+                    chipData: chipData
+                  })
+
+                }
+
               }
 
-              console.log(finalDestination);
+            } else if (chipData.location.startsWith(`${chipData.name[5]}-`)) {
 
-              console.log(dieValue);
+              const spaceLeft = 6 - parseInt(chipData.location[2])
+
+              if (dieValue <= spaceLeft) {
+
+                actionList.push({
+                  priority: 5,
+                  action: "lazyhome",
+                  chipData: chipData
+                })
+
+              }
 
             }
 
           }
 
+          actionList.sort((item1, item2) => item1.priority - item2.priority)
+
+          if (actionList.length > 0) {
+
+            const actionTaken = actionList[0]
+
+            if (actionTaken.action == "bringout") {
+
+              await moveBoardChips(actionTaken.chipData, dieValue, true)
+
+            } else {
+
+              await moveBoardChips(actionTaken.chipData, dieValue)
+
+            }
+
+            // console.log(actionTaken);
+
+          }
+
         }
 
-        checkChipAgainstDie(dieData[0])
 
-        // console.log(data);
-        console.log("I'm an AI");
+        if (dieData[1] == 6) {
+
+          await checkChipAgainstDie(dieData[1])
+
+          await checkChipAgainstDie(dieData[0])
+
+        } else {
+
+          await checkChipAgainstDie(dieData[0])
+
+          await checkChipAgainstDie(dieData[1])
+
+        }
+
+        resolve("I'm an AI");
 
       })
 
@@ -1143,7 +1714,9 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
         let boardData = await BoardCtrl.fetchData()
 
-        await loadBoardColors(boardData)
+        UICtrl.addClass(UIVars.boardHolder, 'show')
+
+        sizeEvents()
 
         await setBoardChips(boardData)
 
@@ -1151,15 +1724,19 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
           let boardData = await BoardCtrl.fetchData()
 
+          await loadBoardColors(boardData)
+
           const player = boardData.players.find(item => item.turn)
 
-          await BoardCtrl.loadBoardText(boardData, `${player.name} Turn`)
+          let dieData
 
           if (player.isHuman) {
 
+            await loadBoardText(boardData, `${player.name} Turn`)
+
             await queryPlayerDie(boardData)
 
-            const dieData = await spinTheDie(boardData)
+            dieData = await spinTheDie(boardData)
 
             if (aChipCanMove(boardData, dieData)) {
 
@@ -1175,10 +1752,13 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
           } else {
 
-            // const dieData = await spinTheDie(boardData)
-            const dieData = [6, 3]
+            await loadBoardText(boardData, `${player.name} Turn`, `${player.name} Turn`)
+
+            dieData = await spinTheDie(boardData)
 
             if (aChipCanMove(boardData, dieData)) {
+
+              await displayAIDieData(boardData, dieData)
 
               await moveAIChip(boardData, dieData)
 
@@ -1190,7 +1770,51 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
           }
 
-          await changeTurn()
+          if (dieData[0] != dieData[1]) {
+
+            await changeTurn()
+
+          }
+
+          saveData()
+
+          const chipIngame = player.chips.find(item => item.finished == false)
+
+          // Tests if someone has finished
+          if (chipIngame == undefined) {
+
+            player.playing = false
+
+            await loadBoardText(boardData, `${player.name} has won`, `${player.name} has won`)
+
+            await new Promise(resolve => setTimeout(() => { resolve }, 2000))
+
+            setData(boardData)
+
+            saveData
+
+          }
+
+          const playersIngame = boardData.players.find(item => item.playing == true)
+
+          // Tests if game is over
+          if (playersIngame == undefined) {
+
+            boardData.gameEnd = new Date()
+
+            await loadBoardText(boardData, `The Game has Ended`, `The Game has Ended`)
+
+            await new Promise(resolve => setTimeout(() => { resolve }, 2000))
+
+            setData(boardData)
+
+            saveData
+
+            resolve('ended')
+
+            break
+
+          }
 
         }
 
@@ -1229,6 +1853,8 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
       fetchOriginalData: () => fetchOriginalData(),
 
+      createFirstData: () => createFirstData(),
+
     }
 
   })()
@@ -1237,20 +1863,28 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
     let boardData = await BoardCtrl.fetchOriginalData()
 
+    if (typeof boardData == "string" || Object.keys(boardData).length == 0) {
+
+      boardData = await BoardCtrl.createFirstData()
+
+      BoardCtrl.setData(boardData)
+
+      BoardCtrl.saveData()
+
+    }
+
     BoardCtrl.setData(boardData)
 
-    await BoardCtrl.configureTheGame()
-
-    console.log('Board Loaded');
+    // await BoardCtrl.configureTheGame()
 
   }
 
   return {
     init: () => {
 
-      sizeEvents()
-
       applicationCore()
+
+      entryEvents()
 
       console.log('Second application is successfully running...')
 
