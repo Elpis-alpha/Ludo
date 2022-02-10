@@ -102,6 +102,8 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
       e.preventDefault();
 
+      BoardCtrl.boardToggle(false)
+
       UICtrl.addClass(UIVars.startGame, 'show')
 
       UICtrl.removeClass(UIVars.boardHolder, 'show')
@@ -162,6 +164,8 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
     UIVars.linkExit.addEventListener('click', async e => {
 
       e.preventDefault();
+
+      BoardCtrl.boardToggle(false)
 
       UICtrl.addClass(UIVars.startGame, 'show')
 
@@ -239,6 +243,8 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
       UICtrl.addClass(UIVars.boardHolder, 'show')
 
       sizeEvents()
+
+      BoardCtrl.boardToggle(true)
 
       BoardCtrl.configureTheGame()
 
@@ -345,6 +351,22 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
       UIVars.isHuman.checked = boardData.players[currentPlayer].isHuman
 
       UIVars.playerInputPhase.dataset.currentplayer = 0
+
+      if (boardData.gameSafe == 'special') {
+
+        UIVars.gameSEspe.checked = true
+
+      } else if (boardData.gameSafe == 'nowhere') {
+
+        UIVars.gameSEnow.checked = true
+
+      } else {
+
+        UIVars.gameSEany.checked = true
+
+      }
+
+
     })
 
     UIVars.plyInpNext.addEventListener('click', async e => {
@@ -495,6 +517,20 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
         { name: 'chip-D-4', started: false, finished: false, location: 'holder' },
       ]
 
+      boardData.players.forEach((item, index) => {
+
+        if (index == 0) {
+
+          item.turn = true
+
+        } else {
+
+          item.turn = false
+
+        }
+
+      })
+
       BoardCtrl.setData(boardData)
 
       BoardCtrl.saveData()
@@ -507,6 +543,8 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
       sizeEvents()
 
+      BoardCtrl.boardToggle(true)
+
       BoardCtrl.configureTheGame()
 
     })
@@ -515,7 +553,13 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
   const BoardCtrl = (() => {
 
-    let CVtheBoardDataHexB3E = {}
+    let CVtheBoardDataHexB3E = {}, boardOn = false;
+
+    const boardToggle = (value) => {
+
+      boardOn = value
+
+    }
 
     const createFirstData = async () => {
 
@@ -828,12 +872,11 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
         // Set Player Images
         // console.log(playerBase);
 
-        const img = UICtrl.createElement('img')
+        const img = UICtrl.findBy(playerBase, ".player-profile img")
 
         img.setAttribute("src", player.avatar)
-        img.setAttribute("alt", player.name + " picture")
 
-        UICtrl.findBy(playerBase, ".player-profile").appendChild(img)
+        img.setAttribute("alt", player.name + " picture")
 
       })
 
@@ -1319,7 +1362,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
             let numberOfMoves = []
 
-            const isActivated = !item.classList.contains('activated')
+            const isNotActivated = !item.classList.contains('activated')
 
             allValues.forEach(item => UICtrl.removeClass(item, 'activated'))
 
@@ -1329,7 +1372,9 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
             UIVars.board.removeEventListener('click', movePoppies)
 
-            if (isActivated) {
+            UIVars.board.addEventListener('click', movePoppies)
+
+            if (isNotActivated) {
 
               UICtrl.addClass(item, 'activated')
 
@@ -1408,7 +1453,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
               if (numberOfMoves.length > 0) {
 
-                UIVars.board.addEventListener('click', movePoppies)
+                // UIVars.board.addEventListener('click', movePoppies)
 
               } else {
 
@@ -1722,95 +1767,103 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
         while (true) {
 
-          let boardData = await BoardCtrl.fetchData()
+          if (boardOn) {
 
-          await loadBoardColors(boardData)
+            let boardData = await BoardCtrl.fetchData()
 
-          const player = boardData.players.find(item => item.turn)
+            await loadBoardColors(boardData)
 
-          let dieData
+            const player = boardData.players.find(item => item.turn)
 
-          if (player.isHuman) {
+            let dieData
 
-            await loadBoardText(boardData, `${player.name} Turn`)
+            if (player.isHuman) {
 
-            await queryPlayerDie(boardData)
+              await loadBoardText(boardData, `${player.name} Turn`)
 
-            dieData = await spinTheDie(boardData)
+              await queryPlayerDie(boardData)
 
-            if (aChipCanMove(boardData, dieData)) {
+              dieData = await spinTheDie(boardData)
 
-              await displayDieData(boardData, dieData)
+              if (aChipCanMove(boardData, dieData)) {
 
-              await configureDieChoosing(boardData, dieData)
+                await displayDieData(boardData, dieData)
+
+                await configureDieChoosing(boardData, dieData)
+
+              } else {
+
+                noChipCanMove()
+
+              }
 
             } else {
 
-              noChipCanMove()
+              await loadBoardText(boardData, `${player.name} Turn`, `${player.name} Turn`)
+
+              dieData = await spinTheDie(boardData)
+
+              if (aChipCanMove(boardData, dieData)) {
+
+                await displayAIDieData(boardData, dieData)
+
+                await moveAIChip(boardData, dieData)
+
+              } else {
+
+                noChipCanMove()
+
+              }
+
+            }
+
+            if (dieData[0] != dieData[1]) {
+
+              await changeTurn()
+
+            }
+
+            saveData()
+
+            const chipIngame = player.chips.find(item => item.finished == false)
+
+            // Tests if someone has finished
+            if (chipIngame == undefined) {
+
+              player.playing = false
+
+              await loadBoardText(boardData, `${player.name} has won`, `${player.name} has won`)
+
+              await new Promise(resolve => setTimeout(() => { resolve }, 2000))
+
+              setData(boardData)
+
+              saveData
+
+            }
+
+            const playersIngame = boardData.players.find(item => item.playing == true)
+
+            // Tests if game is over
+            if (playersIngame == undefined) {
+
+              boardData.gameEnd = new Date()
+
+              await loadBoardText(boardData, `The Game has Ended`, `The Game has Ended`)
+
+              await new Promise(resolve => setTimeout(() => { resolve }, 2000))
+
+              setData(boardData)
+
+              saveData
+
+              resolve('ended')
+
+              break
 
             }
 
           } else {
-
-            await loadBoardText(boardData, `${player.name} Turn`, `${player.name} Turn`)
-
-            dieData = await spinTheDie(boardData)
-
-            if (aChipCanMove(boardData, dieData)) {
-
-              await displayAIDieData(boardData, dieData)
-
-              await moveAIChip(boardData, dieData)
-
-            } else {
-
-              noChipCanMove()
-
-            }
-
-          }
-
-          if (dieData[0] != dieData[1]) {
-
-            await changeTurn()
-
-          }
-
-          saveData()
-
-          const chipIngame = player.chips.find(item => item.finished == false)
-
-          // Tests if someone has finished
-          if (chipIngame == undefined) {
-
-            player.playing = false
-
-            await loadBoardText(boardData, `${player.name} has won`, `${player.name} has won`)
-
-            await new Promise(resolve => setTimeout(() => { resolve }, 2000))
-
-            setData(boardData)
-
-            saveData
-
-          }
-
-          const playersIngame = boardData.players.find(item => item.playing == true)
-
-          // Tests if game is over
-          if (playersIngame == undefined) {
-
-            boardData.gameEnd = new Date()
-
-            await loadBoardText(boardData, `The Game has Ended`, `The Game has Ended`)
-
-            await new Promise(resolve => setTimeout(() => { resolve }, 2000))
-
-            setData(boardData)
-
-            saveData
-
-            resolve('ended')
 
             break
 
@@ -1832,6 +1885,8 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
       fetchData: () => fetchData(),
 
       configureTheGame: () => configureTheGame(),
+
+      boardToggle: (value) => boardToggle(value),
 
       setData: (data) => setData(data),
 
