@@ -1028,7 +1028,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
     const moveBoardChips = async (chipData, count, newChip) => {
 
       const boardDetails = [
-        ['A', 02, 52,],
+        ['A', 0o2, 52,],
         ['B', 15, 13,],
         ['C', 28, 26,],
         ['D', 41, 39,],
@@ -1273,7 +1273,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
         const allChips = data.players.find(item => item.turn).chips.map(item => UICtrl.findElement(`#${item.name}`))
 
         const boardDetails = [
-          ['A', 02, 0,],
+          ['A', 0o2, 0,],
           ['B', 15, 13,],
           ['C', 28, 26,],
           ['D', 41, 39,],
@@ -1569,7 +1569,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
         const player = data.players.find(item => item.turn)
 
         const boardDetails = [
-          ['A', 02, 52,],
+          ['A', 0o2, 52,],
           ['B', 15, 13,],
           ['C', 28, 26,],
           ['D', 41, 39,],

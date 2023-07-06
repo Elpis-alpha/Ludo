@@ -1,8 +1,7 @@
 div.big-wrapper{
-  background-image: url(images/004.jpeg);
-  background-repeat: repeat;
+  background-image: url(images/bg.jpg);
   background-position: center;
-  background-attachment: fixed;
+  background-size: cover;
 }
 
 div.site-topper > nav{
@@ -70,7 +69,7 @@ div.board-holder{
   display: none;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 5px 2px black;
+  box-shadow: 0 0 2px black;
 }
 
 div.board-holder.show{
@@ -144,8 +143,8 @@ div.board-holder > div.die-btn-hol button{
   font-weight: bold;
   outline: 0 none;
   background-color: #f4f4f4;
-  border-radius: 50%;
-  box-shadow: 0 0 5px 2px black;
+  border-radius: 20px;
+  box-shadow: 0 0 2px black;
   font-size: 1rem;
   animation: poppyX 1s linear infinite;
   cursor: pointer;
@@ -153,10 +152,6 @@ div.board-holder > div.die-btn-hol button{
   align-items: center;
   justify-content: center;
   transition: box-shadow .5s;
-}
-
-div.board-holder > div.die-btn-hol button:hover{
-  box-shadow: 0 0 10px 4px black;
 }
 
 /* Spinners */
@@ -241,7 +236,7 @@ div.board-holder > div.board div.board-base-message{
   border-top: 0 none;
   display: flex;
   flex-wrap: wrap;
-  box-shadow: 0 0 30px 4px inset;
+  box-shadow: 0 0 20px 1px inset;
   transition: box-shadow .5s;
 }
 
@@ -273,20 +268,19 @@ div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBM
   margin: 0 .3rem;
   animation: poppy infinite .5s linear;
   /* border: 3px dashed black; */
-  box-shadow: 0 0 3px 0 black;
+  box-shadow: 0 0 2px 0 black;
   cursor: pointer;
   transition: border .5s, box-shadow .5s, background-color .5s, color .5s;
 }
 
 div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value:hover{
-  border: 1px solid black;
+  border: 1px solid #333;
 }
 
 div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value.activated{
-  background-color: black;
+  background-color: #333;
   color: white;
-  border: 1px solid black;
-  box-shadow: 0 0 3px 1px black;
+  border: 1px solid #333;
 }
 
 div.board-holder > div.board div.base-A{
@@ -835,7 +829,7 @@ div.board-holder > div.board div.inner-base div.player-profile img{
   object-position: center;
   object-fit: cover;
   border-radius: 15%;
-  box-shadow: 0 0 3px 1px black;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
 }
 
 div.board-holder > div.board div.inner-base div.player-profile{
@@ -946,7 +940,7 @@ div.board-holder > div.board div div.chip{
   height: 60%;
   border-radius: 50%;
   /* border: 1px solid black; */
-  box-shadow: 0 0 3px 1px black;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.5);
 }
 
 div.board-holder > div.board div.two-chips div.chip{
@@ -988,7 +982,7 @@ div.board-holder > div.board div.ten-chips div.chip{
 div.board-holder > div.board div div.chip.poppy{
   animation: poppy2 infinite .5s linear;
   cursor: pointer;
-  box-shadow: 0 0 4px 2px black;
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.5)
 }
 
 div.start-game{
@@ -1013,30 +1007,24 @@ div.start-game > div[class*="-phase"].show{
 }
 
 div.start-game > div[class*="-phase"]{
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  backdrop-filter: blur(2px);
   max-width: 500px;
   width: 80%;
   max-height: 90%;
   margin: auto;
   overflow: auto;
   border-radius: 1rem;
-  box-shadow: 0 0 5px 2px;
+  box-shadow: 0 0 3px #ccc;
   align-items: center;
   flex-direction: column;
-  animation: colorx 4s infinite;
 }
 
 div.start-game > div[class*="-phase"] .inner-content{
   padding: 1rem;
   margin: auto;
   text-align: center;
-}
-
-@keyframes colorx{
-  0%{background-color: lightgreen;}
-  25%{background-color: lightblue;}
-  50%{background-color: lightsteelblue;}
-  100%{background-color: lightgreen;}
 }
 
 @keyframes rotorx{
@@ -1062,17 +1050,19 @@ div.start-game div.welcome-phase .inner-content div.options button{
   background-color: transparent;
   border: 0 none; outline: 0 none;
   display: inline-block;
-  width: 55%;
+  max-width: 55%;
+  min-width: 40%;
+  padding: 4px 8px;
   margin: .5rem;
-  box-shadow: 0 0 3px 1px;
+  color: #fff;
+  box-shadow: 0 0 3px #ccc;
   border-radius: .5rem;
   cursor: pointer;
   transition: box-shadow .5s, background-color .5s;
 }
 
 div.start-game div.welcome-phase .inner-content div.options button:hover{
-  box-shadow: 0 0 3px 2px;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 div.start-game > div[class*="-phase"] .inner-content .num-ply label[for="gen"]{
@@ -1105,17 +1095,20 @@ div.start-game > div[class*="-phase"] .inner-content div.nxt-btx button{
   background-color: transparent;
   border: 0 none; outline: 0 none;
   display: inline-block;
-  width: 60%;
+  max-width: 80%;
+  min-width: 60%;
+  padding: 4px 8px;
   margin: .5rem;
-  box-shadow: 0 0 3px 1px;
+  color: #fff;
+  box-shadow: 0 0 3px #ccc;
+  margin: .5rem;
   border-radius: .5rem;
   cursor: pointer;
   transition: box-shadow .5s, background-color .5s;
 }
 
 div.start-game > div[class*="-phase"] .inner-content div.nxt-btx button:hover{
-  box-shadow: 0 0 3px 2px;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 div.start-game > div[class*="-phase"] .inner-content div.nox-phi{
@@ -1123,7 +1116,6 @@ div.start-game > div[class*="-phase"] .inner-content div.nox-phi{
   max-width: 300px;
   border-radius: 50%;
   margin: .5rem auto;
-  box-shadow: 0 0 5px 0;
 }
 
 div.start-game > div[class*="-phase"] .inner-content div.nox-phi img{
@@ -1138,29 +1130,30 @@ div.start-game > div[class*="-phase"] .inner-content div.nox-phi img:hover{
 
 div.start-game > div[class*="-phase"] .inner-content div.namx-plx input{
   padding: .2rem .5rem;
-  box-shadow: 0 0 3px 0px;
+  box-shadow: 0 0 2px #ccc;
   width: 100%;
+  color: #fff;
   outline: 0 none; border: 0 none;
   border-radius: .5rem;
   text-align: center;
   margin-bottom: .5rem;
-  transition: box-shadow .5s;
+  transition: background-color .5s;
+  background-color: transparent;
 }
 
 div.start-game > div[class*="-phase"] .inner-content div.namx-plx input:focus{
-  box-shadow: 0 0 6px 0px;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 div.start-game > div[class*="-phase"] .inner-content div.namx-clcx{
   display: flex;
   width: 50%;
   margin: .5rem auto;
-  box-shadow: 0 0 3px 0px;
+  border-radius: 2px;
 }
 
-div.start-game > div[class*="-phase"] .inner-content div.namx-clcx:hover,
-div.start-game > div[class*="-phase"] .inner-content div.namx-clcx:focus{
-  box-shadow: 0 0 6px 0px;
+div.start-game > div[class*="-phase"] .inner-content div.namx-clcx * {
+  opacity: 0;
 }
 
 div.start-game > div[class*="-phase"] .inner-content div.namx-clcx input{
