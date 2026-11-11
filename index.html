@@ -5,52 +5,90 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ludo by Elpis</title>
-  <meta name="description" content="Ludo is a strategy board game for two or more players in which the players race their four chips/tokens from start to finish according to the spinns of two spinners.
-  Elpis presents to you Ludo">
-  <meta name='robots' content='index,follow'>
-  <meta name="theme-color" content="#000">
+  <title>Ludo Online - Free Browser Board Game vs Computer or Friends</title>
+  <meta name="description" content="Play Ludo free in your browser. Race your four chips home using two spinners, capture rivals and pick your safe-square rule. Play 2 to 4 players against the computer or friends. No install, saves your game.">
+  <meta name="robots" content="index,follow">
+  <meta name="author" content="Elpis">
+  <meta name="theme-color" content="#0b0f1f">
+  <link rel="canonical" href="https://elpis-alpha.github.io/Ludo/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Ludo by Elpis">
+  <meta property="og:title" content="Ludo Online - Free Browser Board Game">
+  <meta property="og:description" content="Race your four chips home, capture rivals and win. Play Ludo with 2 to 4 players against the computer or friends.">
+  <meta property="og:url" content="https://elpis-alpha.github.io/Ludo/">
+  <meta property="og:image" content="https://elpis-alpha.github.io/Ludo/images/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="A Ludo board in play with colourful chips">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Ludo Online - Free Browser Board Game">
+  <meta name="twitter:description" content="Race your four chips home, capture rivals and win. Play Ludo with 2 to 4 players.">
+  <meta name="twitter:image" content="https://elpis-alpha.github.io/Ludo/images/og.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" href="/logo192.png" />
-  <link rel="manifest" href="/manifest.json" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="logo192.png">
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="base/style.css">
-  <script defer src="base/app.js"></script>
+  <link rel="stylesheet" href="base/svg.css">
   <link rel="stylesheet" href="style.css">
+  <script defer src="base/app.js"></script>
   <script defer src="app.js"></script>
   <style id="board-colors-A"></style>
   <style id="board-colors-B"></style>
   <style id="board-colors-C"></style>
   <style id="board-colors-D"></style>
   <style id="board-colors-BBM"></style>
-  <link rel="stylesheet" href="base/svg.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": ["VideoGame", "WebApplication"],
+    "name": "Ludo by Elpis",
+    "description": "A browser Ludo board game for 2 to 4 players. Race your four chips home using two spinners.",
+    "url": "https://elpis-alpha.github.io/Ludo/",
+    "image": "https://elpis-alpha.github.io/Ludo/images/og.png",
+    "genre": "Board game",
+    "applicationCategory": "GameApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires JavaScript",
+    "playMode": ["SinglePlayer", "MultiPlayer"],
+    "numberOfPlayers": {"@type": "QuantitativeValue", "minValue": 1, "maxValue": 4},
+    "inLanguage": "en",
+    "isAccessibleForFree": true,
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+    "author": {"@type": "Person", "name": "Elpis"}
+  }
+  </script>
 </head>
 
 <body>
 
+  <noscript><p class="noscript">Ludo needs JavaScript. Please enable it in your browser to play.</p></noscript>
+
   <div class="big-wrapper">
 
-    <div class="site-topper">
+    <header class="site-topper">
 
-      <nav>
+      <nav aria-label="Game menu">
 
-        <h1>Ludo</h1>
+        <h1><span class="brand-mark" aria-hidden="true"></span>Ludo</h1>
 
         <ul>
 
-          <li><a href="" id="link-new">New</a></li>
+          <li><button type="button" id="link-new">New</button></li>
 
-          <li><a href="" id="link-exit">Exit</a></li>
+          <li><button type="button" id="link-exit" class="ghost">Exit</button></li>
 
         </ul>
 
       </nav>
 
-    </div>
+    </header>
 
-    <main>
+    <main id="main">
 
       <div class="main-content">
 
@@ -404,9 +442,11 @@
 
           </div>
 
+          <div class="visually-hidden" id="game-live" role="status" aria-live="polite"></div>
+
           <div class="die-btn-hol">
 
-            <button>Spin Me</button>
+            <button type="button">Spin Me</button>
 
           </div>
 
@@ -448,7 +488,7 @@
 
               <div class="heading">
 
-                <h1>Welcome to Ludo</h1>
+                <h2>Welcome to Ludo</h2>
 
               </div>
 
@@ -456,13 +496,9 @@
 
                 <p> 
 
-                  Ludo is a strategy board game for two or more players in which the players race their four
-
-                  chips/tokens from start to finish according to the spin of two spinners.
-
-                  <br>
-
-                  Elpis presents to you Ludo
+                  Race your four chips from start to home using two spinners. Capture rivals,
+                  roll sixes to bring chips out, and be first to finish. Play 2 to 4 players
+                  against the computer or friends.
 
                 </p>
 
@@ -470,9 +506,9 @@
 
               <div class="options">
 
-                <button id="new-game">New Game</button>
+                <button type="button" id="new-game">New Game</button>
 
-                <button id="continue-game">Continue Game</button>
+                <button type="button" id="continue-game" class="ghost">Continue Game</button>
 
               </div>
 
@@ -486,34 +522,30 @@
 
               <div class="num-ply">
 
-                <label for="gen">
+                <h2 class="phase-title" id="lbl-players">How many players?</h2>
 
-                  How many players do you wish to be involved
-
-                </label>
-
-                <div class="try-pack">
+                <div class="try-pack" role="radiogroup" aria-labelledby="lbl-players">
 
                   <div>
-                    <label for="nx-two">Two</label>
                     <input type="radio" id="nx-two" name="nxplx">
+                    <label for="nx-two">Two</label>
                   </div>
 
                   <div>
-                    <label for="nx-three">Three</label>
                     <input type="radio" id="nx-three" name="nxplx">
+                    <label for="nx-three">Three</label>
                   </div>
 
                   <div>
-                    <label for="nx-four">Four</label>
                     <input type="radio" id="nx-four" name="nxplx" checked="checked">
+                    <label for="nx-four">Four</label>
                   </div>
 
                 </div>
 
                 <div class="nxt-btx">
 
-                  <button id="numb-ply-next">Next</button>
+                  <button type="button" id="numb-ply-next">Next</button>
 
                 </div>
 
@@ -531,17 +563,21 @@
 
                 <div class="nox-phi">
 
-                  <img src="images/avatar/avatar03.png" title="Click Me" id="player-image">
+                  <img src="images/avatar/avatar03.png" alt="Player avatar. Press to change." title="Click to change avatar" id="player-image" tabindex="0" role="button">
 
                 </div>
 
                 <div class="namx-plx">
 
-                  <input type="text" id="player-name" value="Player">
+                  <label for="player-name" class="visually-hidden">Player name</label>
+
+                  <input type="text" id="player-name" value="Player" maxlength="16" autocomplete="off">
 
                 </div>
 
                 <div class="namx-clcx">
+
+                  <label for="player-color" class="swatch-label">Chip colour</label>
 
                   <input type="color" id="player-color">
 
@@ -549,15 +585,15 @@
 
                 <div class="namx-ishmn">
 
-                  <label for="isHuman">Human:</label>
-
                   <input type="checkbox" name="hjd" id="isHuman">
+
+                  <label for="isHuman">Human player</label>
 
                 </div>
 
                 <div class="nxt-btx">
 
-                  <button id="ply-inp-next">Next</button>
+                  <button type="button" id="ply-inp-next">Next</button>
 
                 </div>
 
@@ -573,34 +609,30 @@
 
               <div class="num-ply">
 
-                <label for="gen">
+                <h2 class="phase-title" id="lbl-safe">Safe square rule</h2><p class="hint">Where can a chip not be captured?</p>
 
-                  Game Safe Rule
-
-                </label>
-
-                <div class="try-pack">
+                <div class="try-pack" role="radiogroup" aria-labelledby="lbl-safe">
 
                   <div>
-                    <label for="nxsafe-any">Anywhere</label>
                     <input type="radio" id="nxsafe-any" name="nxsafe">
+                    <label for="nxsafe-any">Anywhere</label>
                   </div>
 
                   <div>
-                    <label for="nxsafe-spe">Special</label>
                     <input type="radio" id="nxsafe-spe" name="nxsafe" checked="checked">
+                    <label for="nxsafe-spe">Special</label>
                   </div>
 
                   <div>
-                    <label for="nxsafe-now">Nowhere</label>
                     <input type="radio" id="nxsafe-now" name="nxsafe">
+                    <label for="nxsafe-now">Nowhere</label>
                   </div>
 
                 </div>
 
                 <div class="nxt-btx">
 
-                  <button id="start-game">Start Game</button>
+                  <button type="button" id="start-game">Start Game</button>
 
                 </div>
 
@@ -620,50 +652,25 @@
 
       <div class="site-footer">
 
-        <div>
-          &#169; 2020 Elpis. All rights reserved. Full Stack Web Developer
-        </div>
+        <div class="copy">&#169; 2020 Elpis. Full Stack Web Developer</div>
 
         <div class="footer-svgs">
 
           <div class="inside-foot-svgs">
 
-            <a href="tel:+2347051679479" target="_blank">
+            <a href="tel:+2347051679479" aria-label="Call Elpis"><i class="el-so-phone"></i></a>
 
-              <i class="el-so-phone"></i>
+            <a href="https://wa.me/2347051679479?text=Hello" target="_blank" rel="noopener" aria-label="WhatsApp Elpis"><i class="el-br-whatsapp"></i></a>
 
-            </a>
+            <a href="https://www.linkedin.com/in/gbolade-festus-olugboyega-8431631b9" target="_blank" rel="noopener" aria-label="Elpis on LinkedIn"><i class="el-br-linkedin"></i></a>
 
-            <a href="http://wa.me/234741679479?text=Hello" target="_blank">
+            <a href="mailto:elpis409@gmail.com?body=Hello" aria-label="Email Elpis"><i class="el-so-envelope"></i></a>
 
-              <i class="el-br-whatsapp"></i>
-
-            </a>
-
-            <a href="http://www.linkedin.om/in/gbolade-festus-olugboyega-8431631b9" target="_blank">
-
-              <i class="el-br-linkedin"></i>
-
-            </a>
-
-            <a href="mailto:elpis409@gmail.com?cc=wede@gmail.com&amp;body=Hello" target="_blank">
-
-
-              <i class="el-so-envelope"></i>
-
-            </a>
-
-            <a href="http://twitter.com/Elpis94950995" target="_blank">
-
-              <i class="el-br-twitter"></i>
-
-            </a>
+            <a href="https://twitter.com/Elpis94950995" target="_blank" rel="noopener" aria-label="Elpis on Twitter"><i class="el-br-twitter-square"></i></a>
 
           </div>
 
         </div>
-
-        <a id="foot-contact"> Contact Me</a>
 
       </div>
 
@@ -673,7 +680,7 @@
 
   </div>
 
-  <div class="mini-message-holder">
+  <div class="mini-message-holder" role="status" aria-live="polite">
 
     <div class="mini-message">
 
@@ -689,7 +696,7 @@
 
       <div class="message-context"></div>
 
-      <span class="cancel-x"><i class="js-crossx"></i></span>
+      <button type="button" class="cancel-x" aria-label="Close">&times;</button>
 
     </div>
 
@@ -701,7 +708,7 @@
 
       <div class="message-context"></div>
 
-      <span class="cancel-x"><i class="js-crossx"></i></span>
+      <button type="button" class="cancel-x" aria-label="Close">&times;</button>
 
     </div>
 

@@ -71,25 +71,93 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
     linkNew: UICtrl.findElement('#link-new'),
     linkExit: UICtrl.findElement('#link-exit'),
 
+    live: UICtrl.findElement('#game-live'),
+
   }
+
+  let sizeBound = false
 
   const sizeEvents = function () {
 
-    SpecialCtrl.OSmallAspect(UICtrl.UIVars.boardHolder, (15 / 16))
+    const holder = UICtrl.UIVars.boardHolder
 
-    SpecialCtrl.smallAspect(UICtrl.UIVars.boardHolder, (15 / 16))
+    // Clear sizes left over from earlier layouts (resize while the menu was open)
+    holder.style.height = null
+    holder.style.maxHeight = null
+    holder.style.width = null
+    holder.style.maxWidth = null
+
+    SpecialCtrl.OSmallAspect(holder, (15 / 16))
 
     SpecialCtrl.OHeightAspect(UIVars.leftSpinner, 1)
 
-    SpecialCtrl.heightAspect(UIVars.leftSpinner, 1)
-
     SpecialCtrl.OHeightAspect(UIVars.rightSpinner, 1)
+
+    // Resize listeners are bound only once
+    if (sizeBound) return
+
+    sizeBound = true
+
+    SpecialCtrl.smallAspect(holder, (15 / 16))
+
+    SpecialCtrl.heightAspect(UIVars.leftSpinner, 1)
 
     SpecialCtrl.heightAspect(UIVars.rightSpinner, 1)
 
   }
 
+  const PROGRESS_KEY = 'ludo-in-progress'
+
+  const isGameInProgress = () => {
+
+    try { return StorageCtrl.retreiveData(PROGRESS_KEY) === '1' } catch (e) { return false }
+
+  }
+
+  const setGameInProgress = (value) => {
+
+    try { StorageCtrl.storeData(PROGRESS_KEY, value ? '1' : '0') } catch (e) { }
+
+    refreshContinue()
+
+  }
+
+  const refreshContinue = () => {
+
+    const can = isGameInProgress()
+
+    UIVars.continueGame.disabled = !can
+
+    UIVars.continueGame.title = can ? '' : 'No saved game yet'
+
+  }
+
+  // Asks before leaving a running game (uses the existing message system)
+  const confirmLeave = (message, onYes) => {
+
+    const boardVisible = UIVars.boardHolder.classList.contains('show')
+
+    if (!boardVisible || !isGameInProgress()) { onYes(); return }
+
+    const box = document.createElement('div')
+
+    box.className = 'confirm-box'
+
+    box.innerHTML = `<p>${message}</p><div class="confirm-actions"><button type="button" class="stay">Keep playing</button><button type="button" class="primary leave">Leave</button></div>`
+
+    box.querySelector('.stay').addEventListener('click', () => MessageCtrl.removeNormalMessage())
+
+    box.querySelector('.leave').addEventListener('click', () => { MessageCtrl.removeNormalMessage(); onYes() })
+
+    MessageCtrl.sendNormalMessage(box)
+
+    box.querySelector('.stay').focus()
+
+  }
+
   const entryEvents = () => {
+
+    refreshContinue()
 
     const allPhase = [
       UIVars.welcomePhase,
@@ -98,9 +166,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
       UIVars.safeSpotPhase
     ]
 
-    UIVars.linkNew.addEventListener('click', async e => {
-
-      e.preventDefault();
+    const goNew = async () => {
 
       BoardCtrl.boardToggle(false)
 
@@ -159,11 +225,17 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
       BoardCtrl.saveData()
 
+    }
+
+    UIVars.linkNew.addEventListener('click', e => {
+
+      e.preventDefault()
+
+      confirmLeave('A game is in progress. Start a new game? Your current game stays saved until you begin the new one.', goNew)
+
     })
 
-    UIVars.linkExit.addEventListener('click', async e => {
-
-      e.preventDefault();
+    const goExit = async () => {
 
       BoardCtrl.boardToggle(false)
 
@@ -174,6 +246,16 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
       allPhase.forEach(item => UICtrl.removeClass(item, 'show'))
 
       UICtrl.addClass(UIVars.welcomePhase, 'show')
+
+      refreshContinue()
+
+    }
+
+    UIVars.linkExit.addEventListener('click', e => {
+
+      e.preventDefault()
+
+      confirmLeave('Leave the game and return to the menu? You can pick up where you left off with Continue Game.', goExit)
 
     })
 
@@ -255,6 +337,12 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
       e.currentTarget.parentElement.style.backgroundColor = e.target.value
 
       UIVars.playerImage.parentElement.style.backgroundColor = e.target.value
+
+    })
+
+    UIVars.playerImage.addEventListener('keydown', e => {
+
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); UIVars.playerImage.click() }
 
     })
 
@@ -489,6 +577,10 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
       boardData.gameStart = new Date()
 
+      boardData.winners = []
+
+      boardData.players.forEach(item => { item.won = false })
+
       boardData.players[0].chips = [
         { name: 'chip-A-1', started: false, finished: false, location: 'holder' },
         { name: 'chip-A-2', started: false, finished: false, location: 'holder' },
@@ -535,6 +627,8 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
       BoardCtrl.saveData()
 
+      setGameInProgress(true)
+
       UICtrl.removeClass(UIVars.startGame, 'show')
 
       allPhase.forEach(item => UICtrl.removeClass(item, 'show'))
@@ -553,7 +647,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
   const BoardCtrl = (() => {
 
-    let CVtheBoardDataHexB3E = {}, boardOn = false;
+    let CVtheBoardDataHexB3E = {}, boardOn = false, gameSession = 0;
 
     const boardToggle = (value) => {
 
@@ -759,6 +853,8 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
             }
 
           }
+
+          UIVars.live.textContent = dieMessage
 
           if (baseItem[3].innerText != dieMessage) {
 
@@ -1160,18 +1256,22 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
       UICtrl.addClass(UIVars.dieBtnHolder, 'show')
 
-      UICtrl.findBy(UIVars.dieBtnHolder, 'button').innerText = `${data.players.find(item => item.turn).name}\nSpin Me`
+      const spinBtn = UICtrl.findBy(UIVars.dieBtnHolder, 'button')
+
+      spinBtn.innerText = `${data.players.find(item => item.turn).name}\nSpin Me`
+
+      spinBtn.focus({ preventScroll: true })
 
       // Waits for user to click the button
       await new Promise((resolve, reject) => {
 
-        UICtrl.findBy(UIVars.dieBtnHolder, 'button').addEventListener('click', e => {
+        spinBtn.addEventListener('click', e => {
 
           UICtrl.removeClass(UIVars.dieBtnHolder, 'show')
 
           resolve('Clicked')
 
-        })
+        }, { once: true })
 
       })
 
@@ -1284,7 +1384,11 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
         // Create correct ones
         allValuesValues.forEach(async item => { if (dieData.includes(item)) { correctOnes.push(item) } })
 
+        const sessionAtStart = gameSession
+
         const movePoppies = async (e) => {
+
+          if (sessionAtStart !== gameSession) { UIVars.board.removeEventListener('click', movePoppies); return }
 
           if (e.target.classList.contains('poppy')) {
 
@@ -1727,7 +1831,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
             let nextPlayer = boardData.players[nextIndex]
 
-            while (!nextPlayer.playing) {
+            while (!nextPlayer.playing || nextPlayer.won) {
 
               nextIndex = (nextIndex + 1) % boardData.players.length
 
@@ -1757,6 +1861,10 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
       return new Promise(async resolve => {
 
+        const mySession = ++gameSession
+
+        const stale = () => !boardOn || mySession !== gameSession
+
         let boardData = await BoardCtrl.fetchData()
 
         UICtrl.addClass(UIVars.boardHolder, 'show')
@@ -1765,113 +1873,147 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
         await setBoardChips(boardData)
 
+        UICtrl.findElements('.chip.poppy').forEach(item => UICtrl.removeClass(item, 'poppy'))
+
         while (true) {
 
-          if (boardOn) {
+          if (stale()) break
 
-            let boardData = await BoardCtrl.fetchData()
+          let boardData = await BoardCtrl.fetchData()
 
-            await loadBoardColors(boardData)
+          await loadBoardColors(boardData)
 
-            const player = boardData.players.find(item => item.turn)
+          const player = boardData.players.find(item => item.turn)
 
-            let dieData
+          let dieData
 
-            if (player.isHuman) {
+          if (player.isHuman) {
 
-              await loadBoardText(boardData, `${player.name} Turn`)
+            await loadBoardText(boardData, `${player.name} Turn`)
 
-              await queryPlayerDie(boardData)
+            await queryPlayerDie(boardData)
 
-              dieData = await spinTheDie(boardData)
+            if (stale()) break
 
-              if (aChipCanMove(boardData, dieData)) {
+            dieData = await spinTheDie(boardData)
 
-                await displayDieData(boardData, dieData)
+            if (stale()) break
 
-                await configureDieChoosing(boardData, dieData)
+            if (aChipCanMove(boardData, dieData)) {
 
-              } else {
+              await displayDieData(boardData, dieData)
 
-                noChipCanMove()
-
-              }
+              await configureDieChoosing(boardData, dieData)
 
             } else {
 
-              await loadBoardText(boardData, `${player.name} Turn`, `${player.name} Turn`)
-
-              dieData = await spinTheDie(boardData)
-
-              if (aChipCanMove(boardData, dieData)) {
-
-                await displayAIDieData(boardData, dieData)
-
-                await moveAIChip(boardData, dieData)
-
-              } else {
-
-                noChipCanMove()
-
-              }
-
-            }
-
-            if (dieData[0] != dieData[1]) {
-
-              await changeTurn()
-
-            }
-
-            saveData()
-
-            const chipIngame = player.chips.find(item => item.finished == false)
-
-            // Tests if someone has finished
-            if (chipIngame == undefined) {
-
-              player.playing = false
-
-              await loadBoardText(boardData, `${player.name} has won`, `${player.name} has won`)
-
-              await new Promise(resolve => setTimeout(() => { resolve }, 2000))
-
-              setData(boardData)
-
-              saveData
-
-            }
-
-            const playersIngame = boardData.players.find(item => item.playing == true)
-
-            // Tests if game is over
-            if (playersIngame == undefined) {
-
-              boardData.gameEnd = new Date()
-
-              await loadBoardText(boardData, `The Game has Ended`, `The Game has Ended`)
-
-              await new Promise(resolve => setTimeout(() => { resolve }, 2000))
-
-              setData(boardData)
-
-              saveData
-
-              resolve('ended')
-
-              break
+              noChipCanMove()
 
             }
 
           } else {
+
+            await loadBoardText(boardData, `${player.name} Turn`, `${player.name} Turn`)
+
+            if (stale()) break
+
+            dieData = await spinTheDie(boardData)
+
+            if (stale()) break
+
+            if (aChipCanMove(boardData, dieData)) {
+
+              await displayAIDieData(boardData, dieData)
+
+              await moveAIChip(boardData, dieData)
+
+            } else {
+
+              noChipCanMove()
+
+            }
+
+          }
+
+          if (stale()) break
+
+          // boardData above is a stale copy: moves were written to the live data
+          const after = fetchData()
+
+          const played = after.players.find(item => item.base == player.base)
+
+          if (played.chips.every(item => item.finished) && !played.won) {
+
+            played.won = true
+
+            after.winners = after.winners || []
+
+            after.winners.push(played.name)
+
+          }
+
+          setData(after)
+
+          if (dieData[0] != dieData[1] || played.won) {
+
+            await changeTurn()
+
+          }
+
+          saveData()
+
+          if (played.won) {
+
+            await loadBoardText(fetchData(), `${played.name} has won`, `${played.name} has won`)
+
+          }
+
+          const stillPlaying = fetchData().players.filter(item => item.playing && !item.won)
+
+          // Game is over when at most one player is left
+          if (stillPlaying.length <= 1) {
+
+            const finalData = fetchData()
+
+            if (stillPlaying.length == 1) {
+
+              stillPlaying[0].won = true
+
+              finalData.winners.push(stillPlaying[0].name)
+
+              finalData.players.find(item => item.base == stillPlaying[0].base).won = true
+
+            }
+
+            finalData.gameEnd = new Date()
+
+            setData(finalData)
+
+            saveData()
+
+            setGameInProgress(false)
+
+            boardToggle(false)
+
+            const board = document.createElement('div')
+
+            board.className = 'confirm-box'
+
+            board.innerHTML = `<p><strong>Game over</strong></p><ol style="text-align:left;margin:0 0 1rem 1.2rem"></ol><div class="confirm-actions"><button type="button" class="primary">Back to menu</button></div>`
+
+            finalData.winners.forEach(name => { const li = document.createElement('li'); li.textContent = name; board.querySelector('ol').appendChild(li) })
+
+            board.querySelector('button').addEventListener('click', () => { MessageCtrl.removeNormalMessage(); UIVars.linkExit.click() })
+
+            MessageCtrl.sendNormalMessage(board)
+
+            resolve('ended')
 
             break
 
           }
 
         }
-
-        console.log('New Turn');
 
       })
 
