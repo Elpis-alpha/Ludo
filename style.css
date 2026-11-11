@@ -84,9 +84,7 @@ div.board-holder > div.die-btn-hol {
   display: none;
   align-items: center;
   justify-content: center;
-  background: rgba(8, 11, 24, 0.55);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  background: rgba(8, 11, 24, 0.28);
   border-radius: 18px;
 }
 
