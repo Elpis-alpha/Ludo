@@ -1,42 +1,40 @@
-/* Ludo game styles: background, board, spinners, setup screens */
+/* Ludo game styles: table, board, spinner dials, setup screens */
 
+/* The table: walnut grain under a warm overhead light */
 div.big-wrapper {
   background:
-    radial-gradient(900px 500px at 15% -10%, rgba(124, 92, 255, 0.28), transparent 60%),
-    radial-gradient(800px 500px at 100% 10%, rgba(34, 211, 238, 0.16), transparent 60%),
-    linear-gradient(180deg, rgba(8, 11, 24, 0.86), rgba(8, 11, 24, 0.97)),
-    url(images/bg.jpg) center / cover no-repeat;
+    radial-gradient(90% 70% at 50% 8%, rgba(255, 205, 150, .13), transparent 65%),
+    radial-gradient(150% 110% at 50% 45%, transparent 50%, rgba(0, 0, 0, .5)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 900' preserveAspectRatio='none'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .16' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .07 0 0 0 0 .04 0 0 0 0 .02 1.4 0 0 0 -.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat,
+    linear-gradient(180deg, #36251b, #26190f);
   background-attachment: fixed;
 }
 
 div.site-background { display: none; }
 
-div.main-content { padding: 1rem; }
-
-@keyframes poppy {
-  0% { transform: scale(1) }
-  25% { transform: scale(.9) }
-  75% { transform: scale(1.1) }
-  100% { transform: scale(1) }
-}
-
-@keyframes poppy2 {
-  0% { transform: scale(1) }
-  25% { transform: scale(.8) }
-  75% { transform: scale(1.2) }
-  100% { transform: scale(1) }
-}
+div.main-content { padding: 1.25rem 1rem 1.5rem; }
 
 @keyframes opacity-in {
   0% { opacity: 0 }
   100% { opacity: 1 }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 8px 30px rgba(124, 92, 255, .55), 0 0 0 0 rgba(124, 92, 255, .55); }
-  50% { box-shadow: 0 8px 30px rgba(34, 211, 238, .55), 0 0 0 16px rgba(124, 92, 255, 0); }
+@keyframes spin-call {
+  0%, 100% { box-shadow: 0 0 0 6px var(--turn, var(--gold)), 0 0 0 9px var(--paper-2), 0 5px 0 9px rgba(0, 0, 0, .3), 0 22px 44px rgba(0, 0, 0, .55); }
+  50% { box-shadow: 0 0 0 9px var(--turn, var(--gold)), 0 0 0 12px var(--paper-2), 0 5px 0 12px rgba(0, 0, 0, .3), 0 22px 44px rgba(0, 0, 0, .55); }
 }
 
+@keyframes chip-ready {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 2px var(--paper-2), 0 0 0 4px var(--ink), 0 3px 6px rgba(0, 0, 0, .4); }
+  50% { transform: scale(1.12); box-shadow: 0 0 0 3px var(--paper-2), 0 0 0 6px var(--ink), 0 0 0 9px rgba(42, 33, 27, .25), 0 5px 10px rgba(0, 0, 0, .4); }
+}
+
+@keyframes value-nudge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* The board: a printed card on the table */
 div.board-holder {
   flex: 1;
   height: 100%;
@@ -44,19 +42,23 @@ div.board-holder {
   display: none;
   align-items: center;
   justify-content: center;
-  border-radius: 18px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, .55), 0 0 0 6px rgba(255, 255, 255, .08), 0 0 0 7px rgba(255, 255, 255, .12);
+  border-radius: 6px;
+  box-shadow:
+    0 0 0 7px var(--paper-3),
+    0 0 0 8px rgba(0, 0, 0, .35),
+    0 6px 0 8px #1a110b,
+    0 30px 60px rgba(0, 0, 0, .6);
 }
 
 div.board-holder.show { display: flex; }
 
 div.board-holder > div.board {
-  background-color: #f2efe8;
+  background-color: var(--paper);
   position: absolute;
   left: 0; top: 0;
   width: 100%;
   height: 100%;
-  border-radius: 18px;
+  border-radius: 6px;
   overflow: hidden;
   display: grid;
   grid-template-columns: repeat(15, 6.67%);
@@ -70,186 +72,248 @@ div.board-holder > div.board div[class|="home-track"] {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  border: 1px solid rgba(15, 20, 48, 0.14);
+  border: 1px solid var(--rule);
 }
 
-div.board-holder > div.board div.track { background-color: #fbfaf6; }
+div.board-holder > div.board div.track { background-color: var(--paper-2); }
 
-/* Spin Me Button */
+/* Spin button: a paper token ringed in the current player's colour */
 div.board-holder > div.die-btn-hol {
   position: absolute;
   inset: 0;
-  height: 100%;
-  width: 100%;
   display: none;
   align-items: center;
   justify-content: center;
-  background: rgba(8, 11, 24, 0.28);
-  border-radius: 18px;
+  background: rgba(26, 17, 11, 0.12);
+  border-radius: 6px;
 }
 
 div.board-holder > div.die-btn-hol.show {
   display: flex;
   z-index: 10;
-  animation: opacity-in 1 .4s;
+  animation: opacity-in 1 .3s;
 }
 
 div.board-holder > div.die-btn-hol button {
-  padding: 1rem;
-  height: 8rem; width: 8rem;
-  max-width: 60%;
-  max-height: 60%;
+  height: 8.5rem; width: 8.5rem;
+  max-width: 50%;
+  max-height: 50%;
   border: 0 none;
   border-radius: 50%;
-  font-weight: 700;
-  font-size: 1.05rem;
-  line-height: 1.3;
-  color: #fff;
-  background: var(--accent-grad);
-  animation: pulse-glow 1.6s ease-in-out infinite;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  font-weight: 800;
+  font-stretch: 85%;
+  line-height: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  white-space: pre-line;
-  transition: transform .2s var(--ease);
+  gap: .3rem;
+  animation: spin-call 1.8s ease-in-out infinite;
+  transition: transform .15s var(--ease);
 }
 
-div.board-holder > div.die-btn-hol button:hover { transform: scale(1.06); }
+div.board-holder > div.die-btn-hol button .spin-name {
+  max-width: 78%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: clamp(.65rem, 2vw, .8rem);
+  font-weight: 600;
+  font-stretch: 100%;
+  color: var(--ink-soft);
+}
+
+div.board-holder > div.die-btn-hol button:hover { transform: translateY(-2px); }
+div.board-holder > div.die-btn-hol button:active { transform: translateY(2px); }
 
 div.board-holder > div.die-btn-hol button:focus-visible {
-  outline: 3px solid #fff;
-  outline-offset: 4px;
+  outline: 3px solid var(--ink);
+  outline-offset: 16px;
   border-radius: 50%;
 }
 
-/* Spinners */
+/* Spinners: two printed dials numbered 1 to 6 (6 sits at the top) */
 div.board-holder > div.die-spinner {
   position: absolute;
   inset: 0;
-  height: 100%;
-  width: 100%;
   display: none;
   align-items: center;
   justify-content: center;
-  background: rgba(8, 11, 24, 0.7);
-  border-radius: 18px;
+  background: rgba(26, 17, 11, 0.8);
+  border-radius: 6px;
   z-index: 5;
 }
 
 div.board-holder > div.die-spinner.show {
   display: flex;
-  animation: opacity-in 1 .4s;
+  animation: opacity-in 1 .3s;
 }
 
 div.board-holder > div.die-spinner div.left-spinner,
 div.board-holder > div.die-spinner div.right-spinner {
   width: 50%;
   height: 100%;
-  padding: 1.2rem;
+  padding: 7%;
 }
 
 div.board-holder > div.die-spinner div.spinner-circle {
-  border: 6px solid rgba(255, 255, 255, .85);
-  box-shadow: 0 0 30px rgba(124, 92, 255, .5), inset 0 0 30px rgba(124, 92, 255, .25);
   height: 100%;
   width: 100%;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  container-type: inline-size;
+  /* Six segments centred on their numbers; the 6 is gold because it lets a chip out */
+  background:
+    repeating-conic-gradient(from 30deg, var(--rule) 0 .8deg, transparent .8deg 60deg),
+    conic-gradient(from -30deg,
+      #f6d9a6 0 60deg, var(--paper-2) 0 120deg, var(--paper) 0 180deg,
+      var(--paper-2) 0 240deg, var(--paper) 0 300deg, var(--paper-2) 0);
+  box-shadow:
+    0 0 0 5px var(--ink),
+    0 0 0 9px var(--paper-3),
+    0 18px 40px rgba(0, 0, 0, .6);
+}
+
+div.board-holder > div.die-spinner div.dial-face { position: absolute; inset: 0; }
+
+div.board-holder > div.die-spinner div.dial-face span {
+  position: absolute;
+  inset: 0;
+  transform: rotate(calc(var(--n) * 60deg));
+  padding-top: 6cqw;
+  text-align: center;
+  font-size: 15cqw;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ink);
+}
+
+/* Hub */
+div.board-holder > div.die-spinner div.spinner-circle::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 12%; height: 12%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 3px var(--ink);
+  z-index: 3;
 }
 
 div.board-holder > div.die-spinner div.spinner-circle div.spinner-hand {
   opacity: 0;
-  height: 50%;
-  width: 6px;
-  border-radius: 6px;
-  background: var(--accent-grad);
+  height: 40%;
+  width: 6%;
   position: absolute;
-  left: calc(50% - 3px);
-  top: 0;
-  transform-origin: bottom;
-  transition: transform 2s, opacity .5s;
+  left: 47%;
+  top: 10%;
+  background: var(--ink);
+  clip-path: polygon(50% 0, 100% 22%, 72% 22%, 72% 100%, 28% 100%, 28% 22%, 0 22%);
+  transform-origin: 50% 100%;
+  transition: transform 2s cubic-bezier(.15, .7, .2, 1), opacity .4s;
+  z-index: 2;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .3));
 }
 
 div.board-holder > div.die-spinner div.spinner-circle div.spinner-hand.show { opacity: 1; }
 
 div.board-holder > div.die-spinner div.spinner-circle div.spinner-value {
   opacity: 0;
-  height: 100%;
-  width: 100%;
   position: absolute;
-  left: 0; top: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: clamp(3rem, 12vw, 6rem);
-  font-weight: 700;
-  color: #fff;
-  transition: opacity .5s;
-}
-
-div.board-holder > div.die-spinner div.spinner-circle div.spinner-value.show { opacity: 1; }
-
-/* Board Track and Base Positions */
-
-div.board-holder > div.board div.board-base-message{
-  grid-column: 1 / 16;
-  grid-row: 16 / 17;
-  background-color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-top: 0 none;
-  display: flex;
-  flex-wrap: wrap;
-  box-shadow: 0 0 20px 1px inset;
-  transition: box-shadow .5s;
-}
-
-div.board-holder > div.board div.board-base-message div.BBM-board-text{
-  font-size: 1rem;
-  font-weight: bold;
-  height: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  justify-content: right;
-  padding: 0 .5rem;
-}
-
-div.board-holder > div.board div.board-base-message div.BBM-board-values{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value{
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  height: 1.5rem;
-  width: 1.5rem;
-  margin: 0 .3rem;
-  animation: poppy infinite .5s linear;
-  /* border: 3px dashed black; */
-  box-shadow: 0 0 2px 0 black;
+  background: radial-gradient(circle, var(--ink) 0 31%, transparent 31.5%);
+  font-size: 30cqw;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--paper-2);
+  transition: opacity .4s;
+  z-index: 4;
+}
+
+div.board-holder > div.die-spinner div.spinner-circle div.spinner-value.show { opacity: 1; }
+
+/* Turn bar along the bottom of the board */
+div.board-holder > div.board div.board-base-message {
+  grid-column: 1 / 16;
+  grid-row: 16 / 17;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  padding: 0 .5rem;
+  background: var(--paper-2);
+  color: var(--ink);
+  border-top: 2px solid var(--ink);
+}
+
+div.board-holder > div.board div.board-base-message div.BBM-board-text {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0 .4rem;
+  font-size: .95rem;
+  font-weight: 700;
+}
+
+div.board-holder > div.board div.board-base-message div.BBM-board-text::before {
+  content: "";
+  flex: none;
+  width: .8em; height: .8em;
+  margin-right: .5em;
+  border-radius: 50%;
+  background: var(--turn, var(--ink));
+  box-shadow: 0 0 0 1.5px var(--ink);
+}
+
+div.board-holder > div.board div.board-base-message div.BBM-board-text:empty::before { display: none; }
+
+div.board-holder > div.board div.board-base-message div.BBM-board-values {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+}
+
+div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.9rem;
+  height: 1.9rem;
+  padding: 0 .35rem;
+  border-radius: 6px;
+  font-weight: 800;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1.5px var(--ink), 0 2px 0 var(--ink);
   cursor: pointer;
-  transition: border .5s, box-shadow .5s, background-color .5s, color .5s;
+  animation: value-nudge 1.1s ease-in-out infinite;
+  transition: background-color .15s, color .15s;
 }
 
-div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value:hover{
-  border: 1px solid #333;
+div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value:nth-child(2) { animation-delay: .15s; }
+div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value:nth-child(3) { animation-delay: .3s; }
+
+div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value:hover { background: #fff; }
+
+div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value.activated {
+  background: var(--ink);
+  color: var(--paper-2);
+  animation: none;
+  transform: translateY(2px);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
 }
 
-div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value.activated{
-  background-color: #333;
-  color: white;
-  border: 1px solid #333;
-}
+/* Board track and base positions */
 
 div.board-holder > div.board div.base-A{
   grid-column: 10 / 16;
@@ -757,282 +821,167 @@ div.board-holder > div.board div.home-end-triangle-D > div{
   transform-origin: 100% 100%;
 }
 
-div.board-holder > div.board div.winner-track-end{
+/* Star squares: start squares carry a paper star, safe squares an ink one */
+div.board-holder > div.board div.track-2,
+div.board-holder > div.board div.track-10,
+div.board-holder > div.board div.track-15,
+div.board-holder > div.board div.track-23,
+div.board-holder > div.board div.track-28,
+div.board-holder > div.board div.track-36,
+div.board-holder > div.board div.track-41,
+div.board-holder > div.board div.track-49 { background-size: 58%; }
+
+div.board-holder > div.board div.winner-track-end {
   grid-column: 8 / span 1;
   grid-row: 8 / span 1;
-  /* background-image: url(images/black_crown.svg); */
-  background-color: black;
+  background-color: var(--ink);
   border-radius: 50%;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100%;
+  box-shadow: 0 0 0 2px var(--paper-2), 0 3px 6px rgba(0, 0, 0, .35);
+  z-index: 6;
 }
 
-div.board-holder > div.board div.winner-track-end div{
+div.board-holder > div.board div.winner-track-end div {
   height: 100%; width: 100%;
   background-image: url(images/crown.svg);
-  background-position: center;
+  background-position: center 55%;
   background-repeat: no-repeat;
-  background-size: 80%;
+  background-size: 62%;
 }
 
-div.board-holder > div.board div.base{
+/* Bases */
+div.board-holder > div.board div.base {
   display: grid;
   grid-template-columns: 13.63% 18.18% 18.18% 18.18% 18.18% 13.63%;
   grid-template-rows: 13.63% 18.18% 18.18% 18.18% 18.18% 13.63%;
+  container-type: size;
+  border-color: rgba(0, 0, 0, .25);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .15);
 }
 
-div.board-holder > div.board div.inner-base{
+div.board-holder > div.board div.inner-base {
   width: 100%; height: 100%;
   grid-column: 2 / span 4;
   grid-row: 2 / span 4;
   display: grid;
   grid-template-columns: 25% 25% 25% 25%;
   grid-template-rows: 25% 25% 25% 25%;
+  background: var(--paper-2);
+  border-radius: 10%;
+  /* --is-turn is set to 1 on the base whose turn it is (see app.js) */
+  box-shadow:
+    0 0 0 calc(var(--is-turn, 0) * 1.6cqw) var(--paper-2),
+    0 0 0 calc(var(--is-turn, 0) * 2.6cqw) var(--ink),
+    0 3px 0 rgba(0, 0, 0, .25);
+  transition: box-shadow .3s var(--ease);
 }
 
-div.board-holder > div.board div.inner-base div.player-profile img{
-  width: 100%;
-  height: 100%;
-  object-position: center;
-  object-fit: cover;
-  border-radius: 15%;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-}
-
-div.board-holder > div.board div.inner-base div.player-profile{
+div.board-holder > div.board div.inner-base div.player-profile {
   grid-column: 1 / 5;
   grid-row: 1 / 5;
+  overflow: hidden;
+  border-radius: 10%;
 }
 
-div.board-holder > div.board div.base div.player-name{
+div.board-holder > div.board div.inner-base div.player-profile img {
+  width: 100%;
   height: 100%;
+  object-position: center bottom;
+  object-fit: cover;
+}
+
+div.board-holder > div.board div.base div.player-name,
+div.board-holder > div.board div.base div.player-text {
+  display: block;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
-  font-size: .7rem;
-  color: white;
-  overflow: hidden;
-  white-space: nowrap;
+  line-height: 13.63cqh;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .55);
+}
+
+div.board-holder > div.board div.base div.player-name {
   text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
+  font-weight: 800;
+  font-size: clamp(.55rem, 6cqw, .95rem);
 }
 
-div.board-holder > div.board div.base div.player-text{
-  height: 100%;
-  font-size: .7rem;
-  color: white;
-  overflow: hidden;
-  white-space: nowrap;
-  /* text-align: right; */
-  display: flex;
-  align-items: center;
-  justify-content: right;
+div.board-holder > div.board div.base div.player-text {
+  text-align: right;
+  font-weight: 600;
+  font-size: clamp(.5rem, 4.6cqw, .78rem);
+  opacity: .92;
 }
 
-div.board-holder > div.board div.base-A div.player-name{
+div.board-holder > div.board div.base-A div.player-name,
+div.board-holder > div.board div.base-B div.player-name,
+div.board-holder > div.board div.base-C div.player-text,
+div.board-holder > div.board div.base-D div.player-text {
   grid-column: 2 / span 4;
   grid-row: 6 / span 1;
 }
 
-div.board-holder > div.board div.base-A div.player-text{
+div.board-holder > div.board div.base-A div.player-text,
+div.board-holder > div.board div.base-B div.player-text,
+div.board-holder > div.board div.base-C div.player-name,
+div.board-holder > div.board div.base-D div.player-name {
   grid-column: 2 / span 4;
   grid-row: 1 / span 1;
 }
 
-div.board-holder > div.board div.base-B div.player-name{
-  grid-column: 2 / span 4;
-  grid-row: 6 / span 1;
-}
-
-div.board-holder > div.board div.base-B div.player-text{
-  grid-column: 2 / span 4;
-  grid-row: 1 / span 1;
-}
-
-div.board-holder > div.board div.base-C div.player-name{
-  grid-column: 2 / span 4;
-  grid-row: 1 / span 1;
-}
-
-div.board-holder > div.board div.base-C div.player-text{
-  grid-column: 2 / span 4;
-  grid-row: 6 / span 1;
-}
-
-div.board-holder > div.board div.base-D div.player-name{
-  grid-column: 2 / span 4;
-  grid-row: 1 / span 1;
-}
-
-div.board-holder > div.board div.base-D div.player-text{
-  grid-column: 2 / span 4;
-  grid-row: 6 / span 1;
-}
-
-div.board-holder > div.board div.inner-base div.holding-cells{
+div.board-holder > div.board div.inner-base div.holding-cells {
   display: grid;
   grid-template-columns: 50% 50%;
   grid-template-rows: 50% 50%;
 }
 
-div.board-holder > div.board div.base-A div.inner-base div.holding-cells{
-  grid-column: 3 / 5;
-  grid-row: 1 / 3;
-}
+div.board-holder > div.board div.base-A div.inner-base div.holding-cells { grid-column: 3 / 5; grid-row: 1 / 3; }
+div.board-holder > div.board div.base-B div.inner-base div.holding-cells { grid-column: 3 / 5; grid-row: 3 / 5; }
+div.board-holder > div.board div.base-C div.inner-base div.holding-cells { grid-column: 1 / 3; grid-row: 3 / 5; }
+div.board-holder > div.board div.base-D div.inner-base div.holding-cells { grid-column: 1 / 3; grid-row: 1 / 3; }
 
-div.board-holder > div.board div.base-B div.inner-base div.holding-cells{
-  grid-column: 3 / 5;
-  grid-row: 3 / 5;
-}
-
-div.board-holder > div.board div.base-C div.inner-base div.holding-cells{
-  grid-column: 1 / 3;
-  grid-row: 3 / 5;
-}
-
-div.board-holder > div.board div.base-D div.inner-base div.holding-cells{
-  grid-column: 1 / 3;
-  grid-row: 1 / 3;
-}
-
-div.board-holder > div.board div.inner-base div.holding-cells .holder{
+div.board-holder > div.board div.inner-base div.holding-cells .holder {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-div.board-holder > div.board div div.chip{
-  width: 60%;
-  height: 60%;
+  margin: 9%;
   border-radius: 50%;
-  /* border: 1px solid black; */
-  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.5);
+  background: rgba(239, 231, 214, .78);
+  box-shadow: inset 0 2px 4px rgba(42, 33, 27, .35), 0 0 0 1px rgba(42, 33, 27, .2);
 }
 
-div.board-holder > div.board div.two-chips div.chip{
-  width: 30%;
-  height: 30%;
-  margin: 10%;
-}
-
-div.board-holder > div.board div.three-chips div.chip{
-  width: 30%;
-  height: 30%;
-  margin: 10%;
-}
-
-div.board-holder > div.board div.four-chips div.chip{
-  width: 20%;
-  height: 20%;
-  margin: 10%;
-}
-
-div.board-holder > div.board div.five-chips div.chip{
-  width: 20%;
-  height: 20%;
-  margin: 5%;
-}
-
-div.board-holder > div.board div.six-chips div.chip{
-  width: 20%;
-  height: 20%;
-  margin: 5%;
-}
-
-div.board-holder > div.board div.ten-chips div.chip{
-  width: 10%;
-  height: 10%;
-  margin: 2.5%;
-}
-
-div.board-holder > div.board div div.chip.poppy{
-  animation: poppy2 infinite .5s linear;
-  cursor: pointer;
-  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.5)
-}
-
-/* Board polish (overrides) */
-
-div.board-holder > div.board div.board-base-message {
-  background-color: #fbfaf6;
-  color: #12162f;
-  border-top: 0 none;
-  gap: .25rem;
-}
-
-div.board-holder > div.board div.board-base-message div.BBM-board-text {
-  font-size: .85rem;
-  font-weight: 600;
-}
-
-div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value {
-  height: 1.7rem;
-  width: 1.7rem;
-  font-weight: 700;
-  background: #fff;
-  color: #12162f;
-  border: 1px solid rgba(15, 20, 48, .25);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
-}
-
-div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value:hover {
-  border-color: var(--accent);
-}
-
-div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value.activated {
-  background: #12162f;
-  color: #fff;
-  border-color: #12162f;
-}
-
-div.board-holder > div.board div.base {
-  border-color: rgba(255, 255, 255, .25);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12), inset 0 0 40px rgba(0, 0, 0, .18);
-}
-
-div.board-holder > div.board div.inner-base div.player-profile img {
-  border-radius: 14%;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, .55), 0 4px 10px rgba(0, 0, 0, .35);
-  background: rgba(255, 255, 255, .15);
-}
-
-div.board-holder > div.board div.inner-base {
-  background: rgba(255, 255, 255, .22);
-  border-radius: 12%;
-}
-
-div.board-holder > div.board div.inner-base div.holding-cells .holder {
-  background: rgba(0, 0, 0, .18);
-  border-radius: 50%;
-  margin: 8%;
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, .3);
-}
-
-div.board-holder > div.board div.base div.player-name,
-div.board-holder > div.board div.base div.player-text {
-  text-shadow: 0 1px 3px rgba(0, 0, 0, .55);
-  font-size: .62rem;
-  padding: 0 .2rem;
-}
-
-div.board-holder > div.board div.base div.player-name { font-weight: 700; font-size: .72rem; }
-
+/* Chips: top-down pawns with a turned groove */
 div.board-holder > div.board div div.chip {
-  background-image: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, .7), rgba(255, 255, 255, 0) 55%), radial-gradient(circle at 50% 50%, transparent 55%, rgba(0, 0, 0, .28) 100%);
-  border: 2px solid rgba(255, 255, 255, .85);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, .45);
+  width: 62%;
+  height: 62%;
+  border-radius: 50%;
   z-index: 2;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, .28) 0 24%, transparent 26%),
+    radial-gradient(circle, transparent 0 44%, rgba(0, 0, 0, .28) 47% 53%, transparent 56%),
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, .45), transparent 58%),
+    radial-gradient(circle, transparent 62%, rgba(0, 0, 0, .25));
+  box-shadow: 0 0 0 1.5px rgba(42, 33, 27, .55), 0 2px 0 rgba(0, 0, 0, .3), 0 3px 6px rgba(0, 0, 0, .3);
   transition: transform .2s var(--ease);
 }
 
+div.board-holder > div.board div.two-chips div.chip,
+div.board-holder > div.board div.three-chips div.chip { width: 32%; height: 32%; margin: 8%; }
+div.board-holder > div.board div.four-chips div.chip { width: 22%; height: 22%; margin: 9%; }
+div.board-holder > div.board div.five-chips div.chip,
+div.board-holder > div.board div.six-chips div.chip { width: 22%; height: 22%; margin: 4%; }
+div.board-holder > div.board div.ten-chips div.chip { width: 12%; height: 12%; margin: 2%; }
+
+/* Chips the player can move */
 div.board-holder > div.board div div.chip.poppy {
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, .5), 0 0 14px 3px rgba(255, 255, 255, .9);
+  cursor: pointer;
+  z-index: 3;
+  animation: chip-ready 1s ease-in-out infinite;
 }
 
-
-/* Setup screens */
+/* Setup screens: printed cards dealt onto the table */
 
 div.start-game {
   display: none;
@@ -1045,97 +994,106 @@ div.start-game {
 div.start-game.show { display: flex; }
 
 div.start-game > div[class*="-phase"] { display: none; }
-div.start-game > div[class*="-phase"].show { display: flex; animation: pop-in .45s var(--ease) 1; }
+div.start-game > div[class*="-phase"].show { display: flex; animation: pop-in .4s var(--ease) 1; }
 
 div.start-game > div[class*="-phase"] {
-  background: linear-gradient(160deg, rgba(255, 255, 255, .11), rgba(255, 255, 255, .04));
-  color: var(--text);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid var(--border);
-  max-width: 520px;
+  --focus: var(--blue);
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 460px;
   width: 100%;
   max-height: 100%;
   margin: auto;
   overflow: auto;
-  border-radius: 24px;
-  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, .12);
+  border-radius: var(--radius);
+  box-shadow: var(--lift);
   align-items: center;
   flex-direction: column;
 }
 
 div.start-game > div[class*="-phase"] .inner-content {
-  padding: 2rem 1.6rem;
+  padding: 2.2rem 1.8rem 2rem;
   margin: auto;
   text-align: center;
   width: 100%;
 }
 
 div.start-game div.welcome-phase .inner-content div.heading h2 {
-  font-size: clamp(1.8rem, 6vw, 2.5rem);
-  font-weight: 700;
-  line-height: 1.15;
-  padding: .3rem 0 .8rem;
-  background: var(--accent-grad);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-size: clamp(2.6rem, 10vw, 3.8rem);
+  font-weight: 800;
+  font-stretch: 78%;
+  line-height: .92;
+  letter-spacing: -.02em;
+  padding-bottom: 1rem;
+  text-wrap: balance;
 }
 
 div.start-game div.welcome-phase .inner-content div.small-text {
-  color: var(--text-dim);
-  padding-bottom: 1.2rem;
+  color: var(--ink-soft);
+  max-width: 34ch;
+  margin: 0 auto;
+  padding-bottom: 1.6rem;
+  font-size: 1rem;
 }
 
 div.start-game .options { display: flex; flex-direction: column; gap: .7rem; align-items: center; }
 
+/* Ink buttons on paper, pressed like a token */
 div.start-game button#new-game,
 div.start-game button#continue-game,
 div.start-game div.nxt-btx button {
   width: 100%;
-  max-width: 280px;
-  padding: .7rem 1.2rem;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: .95rem;
-  color: #fff;
-  background: var(--accent-grad);
-  box-shadow: 0 6px 22px rgba(124, 92, 255, .4);
-  transition: transform .2s var(--ease), box-shadow .2s, opacity .2s;
+  max-width: 260px;
+  padding: .75rem 1.2rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--paper-2);
+  background: var(--ink);
+  box-shadow: 0 3px 0 #000;
+  transition: transform .12s var(--ease), box-shadow .12s var(--ease), background-color .15s, opacity .2s;
 }
 
 div.start-game button#continue-game {
   background: transparent;
-  border-color: var(--border);
-  box-shadow: none;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
 }
 
-div.start-game button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(124, 92, 255, .55); }
-div.start-game button#continue-game:hover:not(:disabled) { background: var(--surface); box-shadow: none; }
-div.start-game button:disabled { opacity: .4; cursor: not-allowed; }
+div.start-game button#new-game:hover:not(:disabled),
+div.start-game div.nxt-btx button:hover:not(:disabled) { background: #000; }
+
+div.start-game button#continue-game:hover:not(:disabled) { background: var(--paper-3); }
+
+div.start-game button#new-game:active:not(:disabled),
+div.start-game div.nxt-btx button:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 #000; }
+
+div.start-game button:disabled { opacity: .35; cursor: not-allowed; }
 
 div.start-game .phase-title {
-  font-size: 1.35rem;
-  font-weight: 700;
-  padding-bottom: .4rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  font-stretch: 85%;
+  line-height: 1.1;
+  padding-bottom: .3rem;
 }
 
-div.start-game .hint { color: var(--text-dim); font-size: .8rem; margin-bottom: .6rem; }
+div.start-game .hint { color: var(--ink-soft); font-size: .95rem; }
 
-div.start-game div.nxt-btx { padding-top: 1.4rem; }
+div.start-game div.nxt-btx { padding-top: 1.6rem; }
 
-/* Radio pills */
+/* Radio choices */
 div.start-game .try-pack {
   display: flex;
   flex-wrap: wrap;
-  gap: .6rem;
-  align-items: center;
+  gap: .5rem;
+  align-items: stretch;
   justify-content: center;
-  padding-top: .8rem;
+  padding-top: 1.1rem;
 }
 
-div.start-game .try-pack > div { display: block; }
+div.start-game .try-pack > div { display: block; flex: 1 1 0; min-width: 6rem; max-width: 9rem; }
 
 div.start-game .try-pack input[type="radio"] {
   position: absolute;
@@ -1145,46 +1103,43 @@ div.start-game .try-pack input[type="radio"] {
 
 div.start-game .try-pack label {
   display: block;
-  padding: .55rem 1.3rem;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  font-weight: 500;
-  transition: background-color .2s, border-color .2s, transform .2s var(--ease), box-shadow .2s;
+  padding: .7rem .8rem;
+  border-radius: var(--radius-sm);
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1.5px var(--rule);
+  font-weight: 700;
+  transition: background-color .15s, box-shadow .15s, color .15s;
 }
 
-div.start-game .try-pack label:hover { border-color: rgba(255, 255, 255, .35); transform: translateY(-1px); }
+div.start-game .try-pack label:hover { box-shadow: inset 0 0 0 1.5px var(--ink); }
 
 div.start-game .try-pack input:checked + label {
-  background: var(--accent-grad);
-  border-color: transparent;
-  color: #fff;
-  font-weight: 600;
-  box-shadow: var(--glow);
+  background: var(--ink);
+  color: var(--paper-2);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
 }
 
 div.start-game .try-pack input:focus-visible + label {
-  outline: 2px solid var(--accent-2);
+  outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
 
 /* Player setup */
 @keyframes rotorx {
-  0% { transform: rotate(0deg); }
-  25% { transform: rotate(6deg); }
-  75% { transform: rotate(-6deg); }
-  100% { transform: rotate(0deg); }
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  75% { transform: rotate(-5deg); }
 }
 
 div.start-game .inner-content div.nox-phi {
-  width: 46%;
-  max-width: 190px;
+  width: 44%;
+  max-width: 170px;
   aspect-ratio: 1;
   border-radius: 50%;
-  margin: .2rem auto 1rem;
-  padding: 6px;
-  background: var(--surface);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, .25), 0 10px 30px rgba(0, 0, 0, .4);
+  margin: 0 auto 1.2rem;
+  padding: 7px;
+  background: var(--paper-3);
+  box-shadow: 0 0 0 3px var(--paper), 0 0 0 4.5px var(--ink), 0 6px 0 4.5px rgba(42, 33, 27, .25);
   transition: background-color .3s;
 }
 
@@ -1192,54 +1147,54 @@ div.start-game .inner-content div.nox-phi img {
   width: 100%; height: 100%;
   border-radius: 50%;
   object-fit: cover;
+  background: var(--paper-2);
   cursor: pointer;
 }
 
-div.start-game .inner-content div.nox-phi img:hover { animation: rotorx .35s infinite linear; }
-div.start-game .inner-content div.nox-phi img:focus-visible { outline: 3px solid var(--accent-2); outline-offset: 4px; border-radius: 50%; }
+div.start-game .inner-content div.nox-phi img:hover { animation: rotorx .4s 1 ease-in-out; }
+div.start-game .inner-content div.nox-phi img:focus-visible { outline: 3px solid var(--focus); outline-offset: 6px; border-radius: 50%; }
 
 div.start-game .inner-content div.namx-plx input {
   padding: .65rem 1rem;
   width: 100%;
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  color: var(--ink);
+  border: 0;
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 1.5px var(--rule);
   text-align: center;
-  font-weight: 600;
-  font-size: 1.05rem;
-  background: rgba(0, 0, 0, .25);
-  transition: border-color .2s, box-shadow .2s;
+  font-weight: 700;
+  font-size: 1.2rem;
+  background: var(--paper-2);
+  transition: box-shadow .15s;
 }
 
-div.start-game .inner-content div.namx-plx input:focus {
-  border-color: var(--accent-2);
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, .25);
-}
+div.start-game .inner-content div.namx-plx input:hover { box-shadow: inset 0 0 0 1.5px var(--ink-soft); }
+div.start-game .inner-content div.namx-plx input:focus { box-shadow: inset 0 0 0 2px var(--blue); }
 
 div.start-game .inner-content div.namx-clcx {
   display: flex;
   width: 100%;
-  height: 2.6rem;
-  margin: .8rem auto;
-  border-radius: 12px;
-  border: 1px solid var(--border);
+  height: 2.8rem;
+  margin: .7rem auto;
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, .2);
   overflow: hidden;
   align-items: center;
   justify-content: center;
-  background: var(--surface);
+  background: var(--paper-3);
 }
 
-div.start-game .inner-content div.namx-clcx:focus-within { outline: 2px solid var(--accent-2); outline-offset: 3px; }
+div.start-game .inner-content div.namx-clcx:focus-within { outline: 3px solid var(--focus); outline-offset: 3px; }
 
 div.start-game .inner-content div.namx-clcx .swatch-label {
   z-index: 1;
   pointer-events: none;
-  font-size: .8rem;
-  font-weight: 600;
+  font-size: .85rem;
+  font-weight: 700;
   padding: .15rem .8rem;
   border-radius: 999px;
-  background: rgba(0, 0, 0, .45);
-  color: #fff;
+  background: var(--paper-2);
+  color: var(--ink);
 }
 
 div.start-game .inner-content div.namx-clcx input {
@@ -1257,18 +1212,19 @@ div.start-game .inner-content div.namx-ishmn {
   align-items: center;
   justify-content: center;
   gap: .7rem;
-  font-weight: 500;
-  margin-top: .4rem;
+  font-weight: 600;
+  margin-top: .5rem;
 }
 
 div.start-game .namx-ishmn input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
-  width: 2.7rem; height: 1.5rem;
+  width: 2.8rem; height: 1.6rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, .2);
+  background: var(--paper-3);
+  box-shadow: inset 0 0 0 1.5px var(--rule);
   cursor: pointer;
-  transition: background-color .25s;
+  transition: background-color .2s;
   flex: none;
 }
 
@@ -1276,27 +1232,25 @@ div.start-game .namx-ishmn input[type="checkbox"]::after {
   content: "";
   position: absolute;
   top: 3px; left: 3px;
-  width: calc(1.5rem - 6px); height: calc(1.5rem - 6px);
+  width: calc(1.6rem - 6px); height: calc(1.6rem - 6px);
   border-radius: 50%;
-  background: #fff;
-  transition: transform .25s var(--ease);
+  background: var(--paper-2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+  transition: transform .2s var(--ease);
 }
 
-div.start-game .namx-ishmn input[type="checkbox"]:checked { background: var(--accent); }
+div.start-game .namx-ishmn input[type="checkbox"]:checked { background: var(--green); box-shadow: none; }
 div.start-game .namx-ishmn input[type="checkbox"]:checked::after { transform: translateX(1.2rem); }
+div.start-game .namx-ishmn input[type="checkbox"]:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
 
 label { cursor: pointer; }
 
 @media (max-width: 480px) {
-  div.main-content { padding: .6rem; }
+  div.main-content { padding: .9rem .6rem 1rem; }
   div.start-game { padding: .6rem; }
-  div.start-game > div[class*="-phase"] .inner-content { padding: 1.6rem 1.1rem; }
-  div.board-holder { border-radius: 12px; }
-  div.board-holder > div.board,
-  div.board-holder > div.die-btn-hol,
-  div.board-holder > div.die-spinner { border-radius: 12px; }
-  div.board-holder > div.board div.base div.player-name { font-size: .55rem; }
-  div.board-holder > div.board div.base div.player-text { font-size: .5rem; }
-  div.board-holder > div.board div.board-base-message div.BBM-board-text { font-size: .65rem; padding: 0 .3rem; }
-  div.board-holder > div.board div div.chip { border-width: 1px; }
+  div.start-game > div[class*="-phase"] .inner-content { padding: 1.8rem 1.2rem 1.6rem; }
+  div.board-holder { box-shadow: 0 0 0 4px var(--paper-3), 0 0 0 5px rgba(0, 0, 0, .35), 0 4px 0 5px #1a110b, 0 20px 40px rgba(0, 0, 0, .6); }
+  div.board-holder > div.board div.board-base-message div.BBM-board-text { font-size: .75rem; padding: 0 .2rem; }
+  div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value { min-width: 1.5rem; height: 1.5rem; font-size: .8rem; }
+  div.board-holder > div.board div.board-base-message div.BBM-board-values { gap: .25rem; }
 }

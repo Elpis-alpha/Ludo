@@ -14,6 +14,6 @@
   "display": "standalone",
   "orientation": "any",
   "categories": ["games"],
-  "theme_color": "#0b0f1f",
-  "background_color": "#0b0f1f"
+  "theme_color": "#2a1c15",
+  "background_color": "#2a1c15"
 }

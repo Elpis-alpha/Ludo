@@ -133,7 +133,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
   }
 
   // Asks before leaving a running game (uses the existing message system)
-  const confirmLeave = (message, onYes) => {
+  const confirmLeave = (message, onYes, actionLabel = 'Leave') => {
 
     const boardVisible = UIVars.boardHolder.classList.contains('show')
 
@@ -143,7 +143,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
     box.className = 'confirm-box'
 
-    box.innerHTML = `<p>${message}</p><div class="confirm-actions"><button type="button" class="stay">Keep playing</button><button type="button" class="primary leave">Leave</button></div>`
+    box.innerHTML = `<p>${message}</p><div class="confirm-actions"><button type="button" class="stay">Keep playing</button><button type="button" class="primary leave">${actionLabel}</button></div>`
 
     box.querySelector('.stay').addEventListener('click', () => MessageCtrl.removeNormalMessage())
 
@@ -231,7 +231,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
       e.preventDefault()
 
-      confirmLeave('A game is in progress. Start a new game? Your current game stays saved until you begin the new one.', goNew)
+      confirmLeave('Start a new game? Your current game stays saved until you begin the new one.', goNew, 'New game')
 
     })
 
@@ -255,7 +255,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
       e.preventDefault()
 
-      confirmLeave('Leave the game and return to the menu? You can pick up where you left off with Continue Game.', goExit)
+      confirmLeave('Leave the game and return to the menu? You can pick it up again with Continue Game.', goExit)
 
     })
 
@@ -664,7 +664,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
         players: [
           {
             name: 'Player 1',
-            color: '#0000ff',
+            color: '#2b62c4',
             avatar: 'images/avatar/avatar03.png',
             chips: [
               { name: 'chip-A-1', started: false, finished: false, location: 'holder' },
@@ -680,7 +680,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
           },
           {
             name: 'Player 2',
-            color: '#008000',
+            color: '#2e8b57',
             avatar: 'images/avatar/avatar06.png',
             chips: [
               { name: 'chip-B-1', started: false, finished: false, location: 'holder' },
@@ -696,7 +696,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
           },
           {
             name: 'Player 3',
-            color: '#ff9400',
+            color: '#e9a23b',
             avatar: 'images/avatar/avatar14.png',
             chips: [
               { name: 'chip-C-1', started: false, finished: false, location: 'holder' },
@@ -712,7 +712,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
           },
           {
             name: 'Player 4',
-            color: '#800000',
+            color: '#c0392b',
             avatar: 'images/avatar/avatar10.png',
             chips: [
               { name: 'chip-D-1', started: false, finished: false, location: 'holder' },
@@ -793,7 +793,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
           const BBMIndex = colorMatching.findIndex(colorBatch => colorBatch[0] == 'BBM')
 
-          colorMatching[BBMIndex][1].innerHTML = `div.board-holder>div.board div.board-base-message {box-shadow: 0 0 30px 4px inset ${item.color}}`
+          colorMatching[BBMIndex][1].innerHTML = `div.board-holder { --turn: ${item.color} } div.board-holder>div.board div.base-${item.base} { --is-turn: 1 }`
 
         }
 
@@ -816,7 +816,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
         const baseItem = baseMatching[baseMatching.findIndex(baseBatch => baseBatch[0] == item.base)]
 
-        const isWaitText = `${item.name} is waiting...`
+        const isWaitText = 'Waiting'
 
         if (baseItem[2].innerText != item.name) {
 
@@ -856,9 +856,13 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
           UIVars.live.textContent = dieMessage
 
-          if (baseItem[3].innerText != dieMessage) {
+          // The base already shows the name, so keep its own line short
+          const baseMessage = typeof dieData == 'string' ? 'Your turn'
+            : dieData[0] == dieData[1] ? `Double ${dieData[0]}` : `Rolled ${dieData[0]} + ${dieData[1]}`
 
-            SpecialCtrl.addLetters(dieMessage, baseItem[3], 40, 0, '')
+          if (baseItem[3].innerText != baseMessage) {
+
+            SpecialCtrl.addLetters(baseMessage, baseItem[3], 40, 0, '')
 
           }
 
@@ -1258,7 +1262,10 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
       const spinBtn = UICtrl.findBy(UIVars.dieBtnHolder, 'button')
 
-      spinBtn.innerText = `${data.players.find(item => item.turn).name}\nSpin Me`
+      const spinName = document.createElement('span')
+      spinName.className = 'spin-name'
+      spinName.textContent = data.players.find(item => item.turn).name
+      spinBtn.replaceChildren(spinName, document.createTextNode('Spin'))
 
       spinBtn.focus({ preventScroll: true })
 
@@ -1889,7 +1896,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
           if (player.isHuman) {
 
-            await loadBoardText(boardData, `${player.name} Turn`)
+            await loadBoardText(boardData, `${player.name}'s turn`)
 
             await queryPlayerDie(boardData)
 
@@ -1913,7 +1920,7 @@ const Application = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSock
 
           } else {
 
-            await loadBoardText(boardData, `${player.name} Turn`, `${player.name} Turn`)
+            await loadBoardText(boardData, `${player.name}'s turn`, `${player.name}'s turn`)
 
             if (stale()) break
 
