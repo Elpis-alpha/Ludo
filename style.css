@@ -1,187 +1,159 @@
-div.big-wrapper{
-  background-image: url(images/bg.jpg);
-  background-position: center;
-  background-size: cover;
+/* Ludo game styles: background, board, spinners, setup screens */
+
+div.big-wrapper {
+  background:
+    radial-gradient(900px 500px at 15% -10%, rgba(124, 92, 255, 0.28), transparent 60%),
+    radial-gradient(800px 500px at 100% 10%, rgba(34, 211, 238, 0.16), transparent 60%),
+    linear-gradient(180deg, rgba(8, 11, 24, 0.86), rgba(8, 11, 24, 0.97)),
+    url(images/bg.jpg) center / cover no-repeat;
+  background-attachment: fixed;
 }
 
-div.site-topper > nav{
-  border-bottom: 1px solid white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+div.site-background { display: none; }
 
-div.site-topper > nav h1{
-  padding: 1rem;
-  font-size: 1.5rem;
-  color: white;
-}
-
-div.site-topper > nav ul{
-  display: flex;
-  padding: 0 1rem;
-}
-
-div.site-topper > nav li{
-  list-style-type: none;
-}
-
-div.site-topper > nav li a{
-  padding: 0 1rem;
-  color: white;
-  text-decoration: none;
-}
-
-div.main-content{
-  padding: 1rem;
-}
+div.main-content { padding: 1rem; }
 
 @keyframes poppy {
-  0%{ transform: scale(1) }
-  25%{ transform: scale(.9) }
-  75%{ transform: scale(1.1) }
-  100%{ transform: scale(1) }
-}
-
-@keyframes poppyX {
-  0%{ background-color: blue;transform: scale(1) }
-  25%{ background-color: red;transform: scale(.9) }
-  75%{ background-color: orange;transform: scale(1.1) }
-  100%{ background-color: green;transform: scale(1) }
+  0% { transform: scale(1) }
+  25% { transform: scale(.9) }
+  75% { transform: scale(1.1) }
+  100% { transform: scale(1) }
 }
 
 @keyframes poppy2 {
-  0%{ transform: scale(1) }
-  25%{ transform: scale(.8) }
-  75%{ transform: scale(1.2) }
-  100%{ transform: scale(1) }
+  0% { transform: scale(1) }
+  25% { transform: scale(.8) }
+  75% { transform: scale(1.2) }
+  100% { transform: scale(1) }
 }
 
 @keyframes opacity-in {
-  0%{ opacity: 0 }
-  100%{ opacity: 1 }
+  0% { opacity: 0 }
+  100% { opacity: 1 }
 }
 
-div.board-holder{
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 8px 30px rgba(124, 92, 255, .55), 0 0 0 0 rgba(124, 92, 255, .55); }
+  50% { box-shadow: 0 8px 30px rgba(34, 211, 238, .55), 0 0 0 16px rgba(124, 92, 255, 0); }
+}
+
+div.board-holder {
   flex: 1;
   height: 100%;
   width: 100%;
   display: none;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 2px black;
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .55), 0 0 0 6px rgba(255, 255, 255, .08), 0 0 0 7px rgba(255, 255, 255, .12);
 }
 
-div.board-holder.show{
-  display: flex;
-}
+div.board-holder.show { display: flex; }
 
-div.board-holder > div.board{
-  background-color: rgba(0, 0, 0, 0.433);
+div.board-holder > div.board {
+  background-color: #f2efe8;
   position: absolute;
   left: 0; top: 0;
   width: 100%;
   height: 100%;
+  border-radius: 18px;
+  overflow: hidden;
   display: grid;
-  grid-template-columns: 6.67% 6.67% 6.67% 6.67% 6.67% 6.67% 6.67% 6.67% 6.67% 6.67% 6.67% 6.67% 6.67% 6.67% 6.67%;
-  grid-template-rows: 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% ;
+  grid-template-columns: repeat(15, 6.67%);
+  grid-template-rows: repeat(16, 6.25%);
 }
 
-div.board-holder > div.board div.track{
-  background-color: white;
+div.board-holder > div.board div.track,
+div.board-holder > div.board div.base,
+div.board-holder > div.board div[class|="home-track"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  display: flex;
   flex-wrap: wrap;
+  border: 1px solid rgba(15, 20, 48, 0.14);
 }
 
-div.board-holder > div.board div.base{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-}
-
-div.board-holder > div.board div[class|="home-track"]{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-wrap: wrap;
-}
+div.board-holder > div.board div.track { background-color: #fbfaf6; }
 
 /* Spin Me Button */
-div.board-holder > div.die-btn-hol{
+div.board-holder > div.die-btn-hol {
   position: absolute;
-  top: 0; left: 0;
-  bottom: 0; right: 0;
+  inset: 0;
   height: 100%;
   width: 100%;
   display: none;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.3);
+  background: rgba(8, 11, 24, 0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border-radius: 18px;
 }
 
-div.board-holder > div.die-btn-hol.show{
+div.board-holder > div.die-btn-hol.show {
   display: flex;
   z-index: 10;
-  animation: opacity-in 1 .5s;
+  animation: opacity-in 1 .4s;
 }
 
-div.board-holder > div.die-btn-hol button{
+div.board-holder > div.die-btn-hol button {
   padding: 1rem;
-  min-width: 10%;
-  min-height: 10%;
-  max-width: 70%;
-  max-height: 70%;
-  height: 7rem; width: 7rem;
+  height: 8rem; width: 8rem;
+  max-width: 60%;
+  max-height: 60%;
   border: 0 none;
-  font-weight: bold;
-  outline: 0 none;
-  background-color: #f4f4f4;
-  border-radius: 20px;
-  box-shadow: 0 0 2px black;
-  font-size: 1rem;
-  animation: poppyX 1s linear infinite;
-  cursor: pointer;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  color: #fff;
+  background: var(--accent-grad);
+  animation: pulse-glow 1.6s ease-in-out infinite;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: box-shadow .5s;
+  text-align: center;
+  white-space: pre-line;
+  transition: transform .2s var(--ease);
+}
+
+div.board-holder > div.die-btn-hol button:hover { transform: scale(1.06); }
+
+div.board-holder > div.die-btn-hol button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 4px;
+  border-radius: 50%;
 }
 
 /* Spinners */
-div.board-holder > div.die-spinner{
+div.board-holder > div.die-spinner {
   position: absolute;
-  top: 0; left: 0;
-  bottom: 0; right: 0;
+  inset: 0;
   height: 100%;
   width: 100%;
   display: none;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.3);
+  background: rgba(8, 11, 24, 0.7);
+  border-radius: 18px;
   z-index: 5;
 }
 
-div.board-holder > div.die-spinner.show{
+div.board-holder > div.die-spinner.show {
   display: flex;
-  animation: opacity-in 1 .5s;
+  animation: opacity-in 1 .4s;
 }
 
 div.board-holder > div.die-spinner div.left-spinner,
-div.board-holder > div.die-spinner div.right-spinner{
+div.board-holder > div.die-spinner div.right-spinner {
   width: 50%;
   height: 100%;
-  padding: 2rem;
+  padding: 1.2rem;
 }
 
-div.board-holder > div.die-spinner div.spinner-circle{
-  border: 8px solid white;
+div.board-holder > div.die-spinner div.spinner-circle {
+  border: 6px solid rgba(255, 255, 255, .85);
+  box-shadow: 0 0 30px rgba(124, 92, 255, .5), inset 0 0 30px rgba(124, 92, 255, .25);
   height: 100%;
   width: 100%;
   border-radius: 50%;
@@ -190,23 +162,22 @@ div.board-holder > div.die-spinner div.spinner-circle{
   justify-content: center;
 }
 
-div.board-holder > div.die-spinner div.spinner-circle div.spinner-hand{
+div.board-holder > div.die-spinner div.spinner-circle div.spinner-hand {
   opacity: 0;
   height: 50%;
-  width: 8px;
-  background-color: white;
+  width: 6px;
+  border-radius: 6px;
+  background: var(--accent-grad);
   position: absolute;
-  left: calc(50% - 4px);
+  left: calc(50% - 3px);
   top: 0;
   transform-origin: bottom;
   transition: transform 2s, opacity .5s;
 }
 
-div.board-holder > div.die-spinner div.spinner-circle div.spinner-hand.show{
-  opacity: 1;
-}
+div.board-holder > div.die-spinner div.spinner-circle div.spinner-hand.show { opacity: 1; }
 
-div.board-holder > div.die-spinner div.spinner-circle div.spinner-value{
+div.board-holder > div.die-spinner div.spinner-circle div.spinner-value {
   opacity: 0;
   height: 100%;
   width: 100%;
@@ -215,14 +186,13 @@ div.board-holder > div.die-spinner div.spinner-circle div.spinner-value{
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 6rem;
-  color: white;
+  font-size: clamp(3rem, 12vw, 6rem);
+  font-weight: 700;
+  color: #fff;
   transition: opacity .5s;
 }
 
-div.board-holder > div.die-spinner div.spinner-circle div.spinner-value.show{
-  opacity: 1;
-}
+div.board-holder > div.die-spinner div.spinner-circle div.spinner-value.show { opacity: 1; }
 
 /* Board Track and Base Positions */
 
@@ -985,195 +955,350 @@ div.board-holder > div.board div div.chip.poppy{
   box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.5)
 }
 
-div.start-game{
+/* Board polish (overrides) */
+
+div.board-holder > div.board div.board-base-message {
+  background-color: #fbfaf6;
+  color: #12162f;
+  border-top: 0 none;
+  gap: .25rem;
+}
+
+div.board-holder > div.board div.board-base-message div.BBM-board-text {
+  font-size: .85rem;
+  font-weight: 600;
+}
+
+div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value {
+  height: 1.7rem;
+  width: 1.7rem;
+  font-weight: 700;
+  background: #fff;
+  color: #12162f;
+  border: 1px solid rgba(15, 20, 48, .25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+}
+
+div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value:hover {
+  border-color: var(--accent);
+}
+
+div.board-holder > div.board div.board-base-message div.BBM-board-values div.BBMBV-die-value.activated {
+  background: #12162f;
+  color: #fff;
+  border-color: #12162f;
+}
+
+div.board-holder > div.board div.base {
+  border-color: rgba(255, 255, 255, .25);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12), inset 0 0 40px rgba(0, 0, 0, .18);
+}
+
+div.board-holder > div.board div.inner-base div.player-profile img {
+  border-radius: 14%;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, .55), 0 4px 10px rgba(0, 0, 0, .35);
+  background: rgba(255, 255, 255, .15);
+}
+
+div.board-holder > div.board div.inner-base {
+  background: rgba(255, 255, 255, .22);
+  border-radius: 12%;
+}
+
+div.board-holder > div.board div.inner-base div.holding-cells .holder {
+  background: rgba(0, 0, 0, .18);
+  border-radius: 50%;
+  margin: 8%;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, .3);
+}
+
+div.board-holder > div.board div.base div.player-name,
+div.board-holder > div.board div.base div.player-text {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .55);
+  font-size: .62rem;
+  padding: 0 .2rem;
+}
+
+div.board-holder > div.board div.base div.player-name { font-weight: 700; font-size: .72rem; }
+
+div.board-holder > div.board div div.chip {
+  background-image: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, .7), rgba(255, 255, 255, 0) 55%), radial-gradient(circle at 50% 50%, transparent 55%, rgba(0, 0, 0, .28) 100%);
+  border: 2px solid rgba(255, 255, 255, .85);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, .45);
+  z-index: 2;
+  transition: transform .2s var(--ease);
+}
+
+div.board-holder > div.board div div.chip.poppy {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .5), 0 0 14px 3px rgba(255, 255, 255, .9);
+}
+
+
+/* Setup screens */
+
+div.start-game {
   display: none;
   position: absolute;
-  top: 0; left: 0;
-  right: 0; bottom: 0;
-  /* background-color: grey; */
+  inset: 0;
   overflow: auto;
+  padding: 1rem;
 }
 
-div.start-game.show{
-  display: flex;
-}
+div.start-game.show { display: flex; }
 
-div.start-game > div[class*="-phase"]{
-  display: none;
-}
+div.start-game > div[class*="-phase"] { display: none; }
+div.start-game > div[class*="-phase"].show { display: flex; animation: pop-in .45s var(--ease) 1; }
 
-div.start-game > div[class*="-phase"].show{
-  display: flex;
-}
-
-div.start-game > div[class*="-phase"]{
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  backdrop-filter: blur(2px);
-  max-width: 500px;
-  width: 80%;
-  max-height: 90%;
+div.start-game > div[class*="-phase"] {
+  background: linear-gradient(160deg, rgba(255, 255, 255, .11), rgba(255, 255, 255, .04));
+  color: var(--text);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--border);
+  max-width: 520px;
+  width: 100%;
+  max-height: 100%;
   margin: auto;
   overflow: auto;
-  border-radius: 1rem;
-  box-shadow: 0 0 3px #ccc;
+  border-radius: 24px;
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, .12);
   align-items: center;
   flex-direction: column;
 }
 
-div.start-game > div[class*="-phase"] .inner-content{
-  padding: 1rem;
+div.start-game > div[class*="-phase"] .inner-content {
+  padding: 2rem 1.6rem;
   margin: auto;
   text-align: center;
+  width: 100%;
 }
 
-@keyframes rotorx{
-  0%{ transform: rotate(0deg); }
-  25%{ transform: rotate(10deg); }
-  75%{ transform: rotate(-10deg); }
-  100%{ transform: rotate(0deg); }
+div.start-game div.welcome-phase .inner-content div.heading h2 {
+  font-size: clamp(1.8rem, 6vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  padding: .3rem 0 .8rem;
+  background: var(--accent-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-div.start-game div.welcome-phase .inner-content div.heading{
-  font-size: 2rem;
-  font-weight: bold;
-  line-height: 2.5rem;
-  padding: .5rem 0;
+div.start-game div.welcome-phase .inner-content div.small-text {
+  color: var(--text-dim);
+  padding-bottom: 1.2rem;
 }
 
-div.start-game div.welcome-phase .inner-content div.small-text{
-  font-size: .8rem;
-  padding-bottom: .5rem;
-}
+div.start-game .options { display: flex; flex-direction: column; gap: .7rem; align-items: center; }
 
-div.start-game div.welcome-phase .inner-content div.options button{
-  background-color: transparent;
-  border: 0 none; outline: 0 none;
-  display: inline-block;
-  max-width: 55%;
-  min-width: 40%;
-  padding: 4px 8px;
-  margin: .5rem;
+div.start-game button#new-game,
+div.start-game button#continue-game,
+div.start-game div.nxt-btx button {
+  width: 100%;
+  max-width: 280px;
+  padding: .7rem 1.2rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: .95rem;
   color: #fff;
-  box-shadow: 0 0 3px #ccc;
-  border-radius: .5rem;
-  cursor: pointer;
-  transition: box-shadow .5s, background-color .5s;
+  background: var(--accent-grad);
+  box-shadow: 0 6px 22px rgba(124, 92, 255, .4);
+  transition: transform .2s var(--ease), box-shadow .2s, opacity .2s;
 }
 
-div.start-game div.welcome-phase .inner-content div.options button:hover{
-  background-color: rgba(255, 255, 255, 0.1);
+div.start-game button#continue-game {
+  background: transparent;
+  border-color: var(--border);
+  box-shadow: none;
 }
 
-div.start-game > div[class*="-phase"] .inner-content .num-ply label[for="gen"]{
-  font-weight: bold;
-  font-size: 1.2rem;
-  padding: .5rem 0;
-  display: block;
+div.start-game button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(124, 92, 255, .55); }
+div.start-game button#continue-game:hover:not(:disabled) { background: var(--surface); box-shadow: none; }
+div.start-game button:disabled { opacity: .4; cursor: not-allowed; }
+
+div.start-game .phase-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  padding-bottom: .4rem;
 }
 
-div.start-game > div[class*="-phase"] .inner-content .num-ply .try-pack{
+div.start-game .hint { color: var(--text-dim); font-size: .8rem; margin-bottom: .6rem; }
+
+div.start-game div.nxt-btx { padding-top: 1.4rem; }
+
+/* Radio pills */
+div.start-game .try-pack {
   display: flex;
   flex-wrap: wrap;
+  gap: .6rem;
   align-items: center;
   justify-content: center;
+  padding-top: .8rem;
 }
 
-div.start-game > div[class*="-phase"] .inner-content .num-ply .try-pack > div{
-  display: inline-block;
-  padding: .5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+div.start-game .try-pack > div { display: block; }
+
+div.start-game .try-pack input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 1px; height: 1px;
 }
 
-div.start-game > div[class*="-phase"] .inner-content .num-ply .try-pack > div label{
-  margin-right: .3rem;
+div.start-game .try-pack label {
+  display: block;
+  padding: .55rem 1.3rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-weight: 500;
+  transition: background-color .2s, border-color .2s, transform .2s var(--ease), box-shadow .2s;
 }
 
-div.start-game > div[class*="-phase"] .inner-content div.nxt-btx button{
-  background-color: transparent;
-  border: 0 none; outline: 0 none;
-  display: inline-block;
-  max-width: 80%;
-  min-width: 60%;
-  padding: 4px 8px;
-  margin: .5rem;
+div.start-game .try-pack label:hover { border-color: rgba(255, 255, 255, .35); transform: translateY(-1px); }
+
+div.start-game .try-pack input:checked + label {
+  background: var(--accent-grad);
+  border-color: transparent;
   color: #fff;
-  box-shadow: 0 0 3px #ccc;
-  margin: .5rem;
-  border-radius: .5rem;
-  cursor: pointer;
-  transition: box-shadow .5s, background-color .5s;
+  font-weight: 600;
+  box-shadow: var(--glow);
 }
 
-div.start-game > div[class*="-phase"] .inner-content div.nxt-btx button:hover{
-  background-color: rgba(255, 255, 255, 0.1);
+div.start-game .try-pack input:focus-visible + label {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 3px;
 }
 
-div.start-game > div[class*="-phase"] .inner-content div.nox-phi{
-  width: 50%;
-  max-width: 300px;
+/* Player setup */
+@keyframes rotorx {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(6deg); }
+  75% { transform: rotate(-6deg); }
+  100% { transform: rotate(0deg); }
+}
+
+div.start-game .inner-content div.nox-phi {
+  width: 46%;
+  max-width: 190px;
+  aspect-ratio: 1;
   border-radius: 50%;
-  margin: .5rem auto;
+  margin: .2rem auto 1rem;
+  padding: 6px;
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .25), 0 10px 30px rgba(0, 0, 0, .4);
+  transition: background-color .3s;
 }
 
-div.start-game > div[class*="-phase"] .inner-content div.nox-phi img{
-  width: 100%;
+div.start-game .inner-content div.nox-phi img {
+  width: 100%; height: 100%;
+  border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
 }
 
-div.start-game > div[class*="-phase"] .inner-content div.nox-phi img:hover{
-  animation: rotorx .3s infinite linear;
-}
+div.start-game .inner-content div.nox-phi img:hover { animation: rotorx .35s infinite linear; }
+div.start-game .inner-content div.nox-phi img:focus-visible { outline: 3px solid var(--accent-2); outline-offset: 4px; border-radius: 50%; }
 
-div.start-game > div[class*="-phase"] .inner-content div.namx-plx input{
-  padding: .2rem .5rem;
-  box-shadow: 0 0 2px #ccc;
+div.start-game .inner-content div.namx-plx input {
+  padding: .65rem 1rem;
   width: 100%;
-  color: #fff;
-  outline: 0 none; border: 0 none;
-  border-radius: .5rem;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   text-align: center;
-  margin-bottom: .5rem;
-  transition: background-color .5s;
-  background-color: transparent;
+  font-weight: 600;
+  font-size: 1.05rem;
+  background: rgba(0, 0, 0, .25);
+  transition: border-color .2s, box-shadow .2s;
 }
 
-div.start-game > div[class*="-phase"] .inner-content div.namx-plx input:focus{
-  background-color: rgba(255, 255, 255, 0.1);
+div.start-game .inner-content div.namx-plx input:focus {
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, .25);
 }
 
-div.start-game > div[class*="-phase"] .inner-content div.namx-clcx{
+div.start-game .inner-content div.namx-clcx {
   display: flex;
-  width: 50%;
-  margin: .5rem auto;
-  border-radius: 2px;
-}
-
-div.start-game > div[class*="-phase"] .inner-content div.namx-clcx * {
-  opacity: 0;
-}
-
-div.start-game > div[class*="-phase"] .inner-content div.namx-clcx input{
   width: 100%;
+  height: 2.6rem;
+  margin: .8rem auto;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+}
+
+div.start-game .inner-content div.namx-clcx:focus-within { outline: 2px solid var(--accent-2); outline-offset: 3px; }
+
+div.start-game .inner-content div.namx-clcx .swatch-label {
+  z-index: 1;
+  pointer-events: none;
+  font-size: .8rem;
+  font-weight: 600;
+  padding: .15rem .8rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, .45);
+  color: #fff;
+}
+
+div.start-game .inner-content div.namx-clcx input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   opacity: 0;
-  -webkit-opacity: 0;
   cursor: pointer;
 }
 
-div.start-game > div[class*="-phase"] .inner-content div.namx-ishmn{
-  font-weight: bold;
+/* Toggle switch */
+div.start-game .inner-content div.namx-ishmn {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: .7rem;
+  font-weight: 500;
+  margin-top: .4rem;
 }
 
-div.start-game > div[class*="-phase"] .inner-content div.namx-ishmn label{
-  padding-right: .2rem;
-}
-
-label{
+div.start-game .namx-ishmn input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 2.7rem; height: 1.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .2);
   cursor: pointer;
+  transition: background-color .25s;
+  flex: none;
+}
+
+div.start-game .namx-ishmn input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  top: 3px; left: 3px;
+  width: calc(1.5rem - 6px); height: calc(1.5rem - 6px);
+  border-radius: 50%;
+  background: #fff;
+  transition: transform .25s var(--ease);
+}
+
+div.start-game .namx-ishmn input[type="checkbox"]:checked { background: var(--accent); }
+div.start-game .namx-ishmn input[type="checkbox"]:checked::after { transform: translateX(1.2rem); }
+
+label { cursor: pointer; }
+
+@media (max-width: 480px) {
+  div.main-content { padding: .6rem; }
+  div.start-game { padding: .6rem; }
+  div.start-game > div[class*="-phase"] .inner-content { padding: 1.6rem 1.1rem; }
+  div.board-holder { border-radius: 12px; }
+  div.board-holder > div.board,
+  div.board-holder > div.die-btn-hol,
+  div.board-holder > div.die-spinner { border-radius: 12px; }
+  div.board-holder > div.board div.base div.player-name { font-size: .55rem; }
+  div.board-holder > div.board div.base div.player-text { font-size: .5rem; }
+  div.board-holder > div.board div.board-base-message div.BBM-board-text { font-size: .65rem; padding: 0 .3rem; }
+  div.board-holder > div.board div div.chip { border-width: 1px; }
 }

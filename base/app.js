@@ -1207,6 +1207,9 @@ const SpecialCtrl = (function () {
 
       setTimeout(() => {
 
+        // Hidden element (e.g. menu showing): measuring would collapse it to 0
+        if (element.offsetWidth === 0 && element.offsetHeight === 0) return
+
         if (element.offsetWidth > element.offsetHeight) {
 
           element.style.width = (element.offsetHeight * ratio) + 'px'
@@ -2877,7 +2880,7 @@ const App = (function (UICtrl, APICtrl, GlobalCtrl, SpecialCtrl, WebSocketCtrl, 
     // Set Footer Display
     const footerDisplayer = () => {
 
-      UICtrl.toggleWithDocument(UIVariables.contactButton, UIVariables.footerSVGS, 'show')
+      if (UIVariables.contactButton) UICtrl.toggleWithDocument(UIVariables.contactButton, UIVariables.footerSVGS, 'show')
 
     }
 
