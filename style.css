@@ -540,10 +540,12 @@ body[data-mode="play"] .tray { display: flex; }
   z-index: 1;
 }
 
-/* The tilt: on the start screen you look across the table, in play straight down */
+/* The tilt: on the start screen you look across the table, in play straight down.
+   Flat is `none`, not a zero-angle perspective(): with a 3D transform still
+   applied, GPU-composited Firefox drew the board's SVG blurry during play. */
 .board-tilt {
   container-type: inline-size;
-  transform: perspective(1600px) rotateX(0deg) rotateZ(0deg);
+  transform: none;
   transition: transform .95s var(--ease);
 }
 
@@ -1140,5 +1142,5 @@ body[data-mode="play"] .stage {
     transition-duration: .01ms !important;
   }
 
-  body:not([data-mode="play"]) .board-tilt { transform: perspective(1600px) rotateX(0deg) rotateZ(0deg); }
+  body:not([data-mode="play"]) .board-tilt { transform: none; }
 }
