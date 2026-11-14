@@ -541,15 +541,16 @@ body[data-mode="play"] .tray { display: flex; }
 }
 
 /* The tilt: on the start screen you look across the table, in play straight down.
-   Flat is `none`, not a zero-angle perspective(): with a 3D transform still
-   applied, GPU-composited Firefox drew the board's SVG blurry during play. */
+   Both resting poses are 2D on purpose: GPU-composited Firefox draws the
+   board's SVG blurry under any resting 3D transform, so the title tilt is an
+   orthographic rotateX(50deg) (a scaleY of cos 50deg) rather than perspective(). */
 .board-tilt {
   container-type: inline-size;
   transform: none;
   transition: transform .95s var(--ease);
 }
 
-body:not([data-mode="play"]) .board-tilt { transform: perspective(1600px) rotateX(50deg) rotateZ(-24deg); }
+body:not([data-mode="play"]) .board-tilt { transform: scaleY(.643) rotate(-24deg); }
 
 /* First load: the board is set down on the table while the title settles */
 body.is-arriving .board-tilt { animation: set-down 1.2s var(--ease) backwards; }
