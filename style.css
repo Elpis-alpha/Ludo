@@ -541,16 +541,16 @@ body[data-mode="play"] .tray { display: flex; }
 }
 
 /* The tilt: on the start screen you look across the table, in play straight down.
-   Both resting poses are 2D on purpose: GPU-composited Firefox draws the
-   board's SVG blurry under any resting 3D transform, so the title tilt is an
-   orthographic rotateX(50deg) (a scaleY of cos 50deg) rather than perspective(). */
+   Every pose is 2D on purpose: GPU-composited Firefox draws the board's SVG
+   blurry under a resting 3D transform. scaleY(cos(a)) is rotateX(a) seen
+   without perspective, so the board still reads as lying on the table. */
 .board-tilt {
   container-type: inline-size;
   transform: none;
   transition: transform .95s var(--ease);
 }
 
-body:not([data-mode="play"]) .board-tilt { transform: scaleY(.643) rotate(-24deg); }
+body:not([data-mode="play"]) .board-tilt { transform: scaleY(cos(50deg)) rotate(-24deg); }
 
 /* First load: the board is set down on the table while the title settles */
 body.is-arriving .board-tilt { animation: set-down 1.2s var(--ease) backwards; }
@@ -559,8 +559,10 @@ body.is-arriving .hero > :nth-child(2) { animation-delay: .12s; }
 body.is-arriving .hero > :nth-child(3) { animation-delay: .2s; }
 body.is-arriving .hero > :nth-child(4) { animation-delay: .28s; }
 
+/* Same two functions as the resting tilt, so each one eases on its own; the
+   lift and the size ride on translate and scale to keep the lists matched */
 @keyframes set-down {
-  from { opacity: 0; transform: perspective(1600px) translate3d(6%, -14%, 0) rotateX(58deg) rotateZ(-40deg) scale(1.12); }
+  from { opacity: 0; translate: 6% -14%; scale: 1.12; transform: scaleY(cos(58deg)) rotate(-40deg); }
 }
 
 @keyframes settle {
